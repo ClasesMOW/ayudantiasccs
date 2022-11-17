@@ -25,6 +25,7 @@ crossref:
   chapters: true
 ---
 
+
 # I. Bienvenida al tutorial
 
 Hola, este tutorial está escrito como la actividad de aplicación de la ayudantía 2 del curso
@@ -118,11 +119,14 @@ En nuestro caso, será bastante lineal y directo, ya que son datos ficticios sim
 Para poder cargar los datos, necesiamos los paquetes adecuados. Siempre hay multiples formas de hacer las cosas en cualquier lenguaje o programa. En este caso, usaremos la función `read_csv()` del paquete *readr*. 
 Para poder usarlo, debemos estar seguros de que está instalado. 
 
+
 ```{r}
 
 ```
 
+
 Si no está instalado, podemos hacerlo con la función `install.packages("[nombre paquete a instalar]")`
+
 
 ```{r}
 #| eval: false
@@ -130,12 +134,15 @@ Si no está instalado, podemos hacerlo con la función `install.packages("[nombr
 install.packages("readr")
 ```
 
+
 Si el paquete ya está instalado, para poder usarlo necesitamos tenerlo cargado en nuestra librería. Para esto usamos la función  `library("[nombre paquete a cargar]")`.
+
 
 
 ```{r}
 library(readr)
 ```
+
 
 Cada paquete lo debemos instalar solo una vez por computador, pero debemos cargarlo en cada sesión para poder utilizarlo.
 
@@ -150,6 +157,7 @@ by inserting the path to the file in the parenthesis. In the example below we fi
 
 PS. note also that we include comments in code block below. Comments are lines that R ignores and these lines always start with a `#` symbol.
 
+
 ```{r ch2-3 }
 #| warning: false
 
@@ -160,7 +168,9 @@ library("readr", "here")
 here::here()
 ```
 
+
 Entonces, dentro de here("[Escribes el directorio relativo]") actuará como el directorio relativo sin errores. Entonces, cargamos los datos y los asignamos a un data frame.
+
 
 ```{r}
 
@@ -168,7 +178,9 @@ school_data_1 <- read.csv(here::here("data_raw/school_data_1.csv"))
 
 ```
 
+
 Usualmente, después de cargar un dataset es ´til visiualizarlo. Usamos ka función head para ver sus primeras 6 observaciones.
+
 
 ```{r ch2-3a}
 #| warning: false
@@ -178,7 +190,9 @@ head(school_data_1)
 
 ```
 
+
 Una segunda alternativa es descargar y cargar los datos directamente en R desde internet. Puede ser cualquier link directo o, si está alojado en github, tiene que ser un repo público.
+
 
 
 ```{r}
@@ -188,18 +202,22 @@ school_data_1 <- read.csv("https://github.com/ClasesMOW/ayudantiasccs/blob/main/
 ```
 
 
+
 ### 1.3 Cargar datos STATA
 
 En Ciencias Sociales es muy comun contar con datos para ser utilizados en el programa stata, estos terminan en .dta. Para cargarlos, 
+
 ```{r}
 
 school_data_1 <- read.csv(here::here("data_raw/school_data_1.csv"))
 
 ```
 
+
 https://github.com/ClasesMOW/ayudantiasccs/blob/main/data_raw/school_data_2.dta
 
 Vamos a usar HAVEN del paquete tidyverse. Tambien usaremos muchas otras funciones de ese paquete, asi que es buen momento para cargalo.
+
 
 ```{r}
 library(tidyverse)
@@ -207,22 +225,27 @@ library(tidyverse)
 school_data_2<- haven::read_dta(here::here("data_raw/school_data_2.dta"))
 ```
 
+
 Usemos el comando tail() para ver las últimas 10 entradas.
+
 
 ```{r}
 # print the 8 rows in the tail
 tail(school_data_2,n=10)
 ```
 
+
 ### 1.4 Cargar datos Microsoft Excel
 
 Finalmente, cargaremos el tercer dataset .xlsx. Para esto usaremos tambien del paquete readxl que viene incluido en tidyverse. Démosle una mirada con glimpse, también del tidyverse.
+
 
 ```{r}
 school_data_3 <- readxl::read_xlsx(here::here("data_raw/school_data_3.xlsx"))
 
 glimpse(school_data_3)
 ```
+
 
 
 ## 2. Unir los datasets
@@ -263,3 +286,4 @@ Otra opción es con join de tidyverse.
 ## 6. Efectos fijos, aleatorios y modelos jerárquicos
 
 ## 7. Matching
+
