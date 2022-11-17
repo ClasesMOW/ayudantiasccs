@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>ccs-ayudantia2-tutorial</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="ccs-ayudantia2-tutorial_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ccs-ayudantia2-tutorial_files/libs/quarto-html/quarto.js"></script>
+<script src="ccs-ayudantia2-tutorial_files/libs/quarto-html/popper.min.js"></script>
+<script src="ccs-ayudantia2-tutorial_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="ccs-ayudantia2-tutorial_files/libs/quarto-html/anchor.min.js"></script>
+<link href="ccs-ayudantia2-tutorial_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ccs-ayudantia2-tutorial_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="ccs-ayudantia2-tutorial_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="ccs-ayudantia2-tutorial_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="ccs-ayudantia2-tutorial_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="i.-bienvenida-al-tutorial" class="level1">
+<h1>I. Bienvenida al tutorial</h1>
+<p>Hola, este tutorial está escrito como la actividad de aplicación de la ayudantía 2 del curso</p>
+<p>La idea es ir desarrollando el tutorial en paralelo a la sesión y que puedan tomar apuntes adicionales directamente en el notebook. Está escrito como .qmd, un notebook Quarto y puede ser editado en restudio, vscode o cualquier otro IDE o editor de texto. El lenguaje utilizado para el procesamiento y análisis es R.</p>
+<p>Se recomienda crear un fork al repositorio y trabajar en su propia rama.</p>
+<p><strong>Como funciona</strong></p>
+<ul>
+<li><p>El tutorial se estructura como un proyecto de investigación ficticio completo, que empezaremos cargando datos brutos hasta obtener e interpretar coficientes de regresión.</p></li>
+<li><p>Lo métodos a cubir son:</p>
+<p><a href="#regresión-lineal-y-método-de-diferencias-en-datos-experimentales">1. Regresión lineal y método de diferencias (en datos experimentales)</a></p>
+<p><a href="#logit-y-probit">2. Logit y probit</a></p>
+<p><a href="#variables-instrumentales">3. Variables Instrumentales</a></p>
+<p><a href="#regresión-discontinua">4. Regresión Discontinua</a></p>
+<p><a href="#diferencias-en-diferencias">5. Diferencias en Diferencias</a></p>
+<p><a href="#efectos-fijos-aleatorios-y-modelos-jerárquicos">6. Efectos fijos, aleatorios y modelos jerárquicos</a></p>
+<p><a href="#matching">7. Matching</a></p></li>
+<li><p>Los datos y notebook son descargables, así que se recomienda correr todo en tu propio computador o en una instancia en la nube.</p></li>
+<li><p>Este tutorial es una adaptación del trabajo de <a href="https://hhsievertsen.shinyapps.io/applied_econ_with_R_dynamic">Hans H. Sievertsen</a>, con la adición de métodos de matching y con cambios a la situación a analizar.</p></li>
+</ul>
+<p><br></p>
+<section id="pregunta-de-investigación-y-datos" class="level2">
+<h2 class="anchored" data-anchor-id="pregunta-de-investigación-y-datos">1 Pregunta de investigación y datos</h2>
+<p>Vamos a usar una situación ficticia, con datos simulados para poder aplicar de manera consisa los diferentes tipos de estrategias de identificación revisadas en clase. ALgunas (que se supone ya manejan) las revisaremos muy rápidamente y en otras, vamos a tener mayor énfasis.</p>
+<section id="pregunta-de-investigación" class="level3">
+<h3 class="anchored" data-anchor-id="pregunta-de-investigación">1.1 Pregunta de investigación</h3>
+<p>Nuestro objetivo es responder la siguiente pregunta <strong>ficticia</strong> de investigación:</p>
+<blockquote class="blockquote">
+<p>Asistir a preuniversitario mejora los resultados académicos?</p>
+</blockquote>
+<p>Para responder esta pregunta, usaremos unos datos <strong>ficticios y simulados</strong></p>
+</section>
+<section id="contexto-ficticio" class="level3">
+<h3 class="anchored" data-anchor-id="contexto-ficticio">1.2 Contexto ficticio</h3>
+<p>La pregunta de investigación</p>
+<p>The research question is inspired by papers such as <a href="https://www.sciencedirect.com/science/article/pii/S0304407607001194?casa_token=hnnF764CKPoAAAAA:5b9WhCManNDsdW4SmOHnnzNr0fZIarW8s6EsvpQW7MdUt470eNPmN2T8IFCsNc6Iajew5tEeNA">Matsudaira (2007)</a> and the survey on interventions for low SES students by by <a href="https://journals.sagepub.com/doi/abs/10.3102/0034654316687036">Dietrichson et al ( 2017)</a>.</p>
+<p>El <strong>escenario ficticio</strong> es el siguiente:</p>
+<ul>
+<li>Para un conjunto de colegios en una comuna, existe la opción de asistir a pre-unirversitario intensivo los fines de semana durante el segundo semestre de 4to medio.</li>
+<li>El preuniversitario se enfoca en preparar la prueba de admisión a la universidad vigente (PSU en ese momento)</li>
+<li>El preuniversitario es gratuito, pero para ser matriculados requiere que los padres se involucren en un proceso.</li>
+<li>Estamos interesados en testear el impacto de la participación en el preuniversitario en los resultados académicos de los estudiantes.</li>
+</ul>
+</section>
+<section id="datos-ficticios-dispobibles" class="level3">
+<h3 class="anchored" data-anchor-id="datos-ficticios-dispobibles">1.3 Datos ficticios dispobibles</h3>
+<ol type="1">
+<li>school_data_1.csv</li>
+</ol>
+<ul>
+<li>Usamos esta data para ejemplificar como cargar data guardada en formato csv.</li>
+<li>Este dataset tiene información sobre cada individuo (con identificador id), la escuela a la que asiste, un indicador si participó en el preuniversitario, sexo, ingreso del hogar, educación de los padres, resultados en diagnostico PSU a incios del año escolar y el puntaje efectivamente obtenido en la prueba oficial.</li>
+</ul>
+<ol start="2" type="1">
+<li>school_data_2.dta</li>
+</ol>
+<ul>
+<li>Usamos esta data para ejemplificar como cargar data guardada en formato STATA.</li>
+<li>Este dataset tiene información de cada individuo (con identificador id).</li>
+<li>Este dataset tiene la información si el individuo recibió la carta de invitación para participar del preuniversitario.</li>
+</ul>
+<ol start="3" type="1">
+<li>school_data_3.xlsx</li>
+</ol>
+<ul>
+<li>Usamos este dataset para practicar como cargar datos guardados en formato Microsoft Excel.</li>
+<li>Este dataset incluye datos sobre cada individuo (con identificador id)</li>
+<li>Este dataset tiene información de rendimiento académico antes y después del preuniversitario.</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="ii.-preparación-de-los-datos" class="level1">
+<h1>II. Preparación de los datos</h1>
+<p>En esta sección vamos a preparar los datos para el análisis. Este proceso generalmente incluye cargarlos, inspeccionarlos, limpiar y dar la estructura deseada. También revisaremos estadísticas descriptivas que nos den una idea antes de estimar cualquier modelo.</p>
+<p>En la vida real, este proceso suele ser bastante largo, laborioso e implica volver sobre lso pasos anteriores múltiples veces. También invlocura tomar desiciones por parte de los investigadores, por lo cual la documentación de esta fase es especialmente importante.</p>
+<p>En nuestro caso, será bastante lineal y directo, ya que son datos ficticios simulados. Pero en la realidad, no suele ser así.</p>
+<section id="cargar-los-datos" class="level2">
+<h2 class="anchored" data-anchor-id="cargar-los-datos">1 Cargar los datos</h2>
+<section id="intalar-y-cargar-paquetes" class="level3">
+<h3 class="anchored" data-anchor-id="intalar-y-cargar-paquetes">1.1 Intalar y cargar paquetes</h3>
+<p>Para poder cargar los datos, necesiamos los paquetes adecuados. Siempre hay multiples formas de hacer las cosas en cualquier lenguaje o programa. En este caso, usaremos la función <code>read_csv()</code> del paquete <em>readr</em>. Para poder usarlo, debemos estar seguros de que está instalado.</p>
+<div class="cell">
+
+</div>
+<p>Si no está instalado, podemos hacerlo con la función <code>install.packages("[nombre paquete a instalar]")</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"readr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Si el paquete ya está instalado, para poder usarlo necesitamos tenerlo cargado en nuestra librería. Para esto usamos la función <code>library("[nombre paquete a cargar]")</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Cada paquete lo debemos instalar solo una vez por computador, pero debemos cargarlo en cada sesión para poder utilizarlo.</p>
+</section>
+<section id="cargar-datos-csv" class="level3">
+<h3 class="anchored" data-anchor-id="cargar-datos-csv">2.2 Cargar datos csv</h3>
+<p>Con <em>readr</em> estamos en condiciones de usar la función <code>read_csv()</code> para cargar la primera base de datos.</p>
+<p>Vamos a cargar <em>school_data_1.csv</em> agregando el path a los datos en paréntesis. Puede reemplazar por el path correspondiente o usar el paquete auxiliar <code>here</code></p>
+<p>by inserting the path to the file in the parenthesis. In the example below we first load the <em>readr</em> package to illustrate that we have to load it in every new session. However, in later code blocks we’ll leave out the <code>library()</code> call for packages that have already been loaded.</p>
+<p>PS. note also that we include comments in code block below. Comments are lines that R ignores and these lines always start with a <code>#</code> symbol.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load readr package</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"readr"</span>, <span class="st">"here"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">read.csv</span>(<span class="st">"C:/Users/hhs/school_data_1.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(school_data_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Una segunda alternativa es descargar y cargar los datos directamente en R desde internet.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#school_data_1 &lt;- read.csv("  ")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="unir-los-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="unir-los-datasets">Unir los datasets</h2>
+</section>
+<section id="lipiar-los-datos" class="level2">
+<h2 class="anchored" data-anchor-id="lipiar-los-datos">Lipiar los datos</h2>
+</section>
+</section>
+<section id="iii.-estimación-e-identifiación" class="level1">
+<h1>III. Estimación e identifiación</h1>
+<section id="regresión-lineal-y-método-de-diferencias-en-datos-experimentales" class="level2">
+<h2 class="anchored" data-anchor-id="regresión-lineal-y-método-de-diferencias-en-datos-experimentales">1. Regresión lineal y método de diferencias (en datos experimentales)</h2>
+</section>
+<section id="logit-y-probit" class="level2">
+<h2 class="anchored" data-anchor-id="logit-y-probit">2. Logit y probit</h2>
+</section>
+<section id="variables-instrumentales" class="level2">
+<h2 class="anchored" data-anchor-id="variables-instrumentales">3. Variables Instrumentales</h2>
+</section>
+<section id="regresión-discontinua" class="level2">
+<h2 class="anchored" data-anchor-id="regresión-discontinua">4. Regresión Discontinua</h2>
+</section>
+<section id="diferencias-en-diferencias" class="level2">
+<h2 class="anchored" data-anchor-id="diferencias-en-diferencias">5. Diferencias en Diferencias</h2>
+</section>
+<section id="efectos-fijos-aleatorios-y-modelos-jerárquicos" class="level2">
+<h2 class="anchored" data-anchor-id="efectos-fijos-aleatorios-y-modelos-jerárquicos">6. Efectos fijos, aleatorios y modelos jerárquicos</h2>
+</section>
+<section id="matching" class="level2">
+<h2 class="anchored" data-anchor-id="matching">7. Matching</h2>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
