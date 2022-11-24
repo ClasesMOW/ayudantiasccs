@@ -1,11 +1,11 @@
 ---
 title: "Datos observacionales y estrategias de identificación"
 subtitle: "Ayudantía 2- Curso métodos en CCS"
-author:
-  name: Melanie Oyarzún
-  affiliation: Universidad del Desarrollo
-  email: moyarzunw@udd.cl
-date: "`r format(Sys.time(), '%d %B %Y')`"
+#author:
+#  name: Melanie Oyarzún
+#  affiliation: Universidad del Desarrollo
+#  email: moyarzunw@udd.cl
+#date: "`r format(Sys.time(), '%d %B %Y')`"
 
 format: 
     html:
@@ -14,7 +14,8 @@ format:
         toc-depth: 3
         embed-resources: true
         self-contained-math: true
-
+        
+keep-md: true
 editor: source
 
 execute:
@@ -44,15 +45,15 @@ Se recomienda crear un fork al repositorio y trabajar en su propia rama.
 
     [2. Logit y probit](#logit-y-probit)
 
-    [3. Variables Instrumentales]
+    \[3. Variables Instrumentales\]
 
-    [4. Regresión Discontinua]
+    \[4. Regresión Discontinua\]
 
-    [5. Diferencias en Diferencias]
+    \[5. Diferencias en Diferencias\]
 
-    [6. Efectos fijos, aleatorios y modelos jerárquicos]
+    \[6. Efectos fijos, aleatorios y modelos jerárquicos\]
 
-    [7. Matching]
+    \[7. Matching\]
 
 -   Los datos y notebook son descargables, así que se recomienda correr todo en tu propio computador o en una instancia en la nube.
 
@@ -567,20 +568,17 @@ ggplot(analysisdata%>%filter(year==5),
 
 Del grafico anteriro podemos observar que los resultados de los test se correlacionan con ingreso parental. Esto no es una sorpresa. Veamos si tambien el asistir al preuniversitario se correlaciona con estas características individuales.
 
-Primero, creamos un scatter plot de eduación de los padres y test score en el semestre antes del preuniversitario. Usemos el mismo código de arriba pero en lugar de ingreso, usamos educación parental.  Segundo, creemos un gráfico de barras que muestre que el promedio de puntaje en la prueba diagnostico por asistencia al preuniversitario.
-Tercero, creamos un box plot  de ingreso de los padres por asistencia al preuniversitario.
+Primero, creamos un scatter plot de eduación de los padres y test score en el semestre antes del preuniversitario. Usemos el mismo código de arriba pero en lugar de ingreso, usamos educación parental. Segundo, creemos un gráfico de barras que muestre que el promedio de puntaje en la prueba diagnostico por asistencia al preuniversitario. Tercero, creamos un box plot de ingreso de los padres por asistencia al preuniversitario.
 
 Nuestro codigo ahora tiene estos elementos.
 
-- Creamos el objeto `ggplot()` y cargamos la data y el tema. Este objeto es llamado un *rawchart*
-- Creamos 3 gráficos basados en *rawchart*, cada uno lo guardamos con un nombre.
-    -  Para el de barras, usamos `geom_bar()` y fijamos `stat="summary", fun="mean"` para decirle a R que cree un grafico de barras con la media de *test_score*      
-    - usamos `labs()` para decir los ejes y titulos.
-    - Usamos `geom_boxplot()` para crear el boxplot.
-
-- Usamos el paquete *patchwork* para combinar varios gráficos en uno.
-- usamos *ggsave()* para guardar el gráfico combinado como un archivo *png*
-
+-   Creamos el objeto `ggplot()` y cargamos la data y el tema. Este objeto es llamado un *rawchart*
+-   Creamos 3 gráficos basados en *rawchart*, cada uno lo guardamos con un nombre.
+    -   Para el de barras, usamos `geom_bar()` y fijamos `stat="summary", fun="mean"` para decirle a R que cree un grafico de barras con la media de *test_score*\
+    -   usamos `labs()` para decir los ejes y titulos.
+    -   Usamos `geom_boxplot()` para crear el boxplot.
+-   Usamos el paquete *patchwork* para combinar varios gráficos en uno.
+-   usamos *ggsave()* para guardar el gráfico combinado como un archivo *png*
 
 ```{r}
 # Load patchwork 
@@ -612,11 +610,9 @@ Estos tres gráficos nos muestran que los puntajes en las pruebas se correlacion
 
 Es decir, tenemos **SESGO DE SELECCIÓN**
 
-
 #### 4.1.3 Histogramas y gráficos de densidad
 
 Comaperemos la distribución de los puntajes depués de asistir al preuniversitario por quienes fueron y los que no fueron a dicho reu. Crea,os un histograma con una linea que muestre las densidades estimadas.
-
 
 ```{r}
 # create a histogram and density chart
@@ -633,19 +629,36 @@ ggplot(filter(analysisdata,year==6),
 
 Claramente hay diferencias en sus resultados. Pero la estimación directa va a confundir cuanto de esto proviene del sesgo de selección y cuanto es el efecto real de ir al preu.
 
+#### 4.1.4 Correalograma
+
+Muchas veces queremos saber que tán correlacionadas estan las variables en una muestra. Podríamos simplementa calular una tabla de correlaciones, pero el paquete \[PerformanceAnalytics\] tiene una función muy conveniente: `chart.Correlation()` que nos presenta un gráico con las correlaciones de a pares, su significancia estadística, gráficos de dispersión y distribución.
+
+```{r}
+
+#Cargamos el paquete
+library("PerformanceAnalytics")
+
+correlations_graph <-  analysisdata %>%
+            dplyr::filter(year==6) %>%
+            ungroup() %>%
+            dplyr::select(female, parental_schooling, parental_lincome, summerschool, letter )  #variables para el correalograma
+
+chart.Correlation(correlations_graph, histogram=TRUE, pch=19)
+
+
+```
+
 # III. Estimación e identifiación
 
 Tenemos nuestro problema base claro, ahora usemos algunas estrategias de identificaión para encontrar el efecto de asitir a un preuniversitario en esta muestra.
 
 Para esto, partiremos del mejor caso: contamos con un experimento y luego iremos variando la información disponible y la estrategia que es factible emplear.
 
-
-## 1. Regresión lineal ingenua 
+## 1. Regresión lineal ingenua
 
 Nuestro objetivo es estimar la relación el puntaje en la prueba de admisión a la universidad y participar del preuniversitario intensivo. Para esto podríamos pensar en un modelo que directamente incluya a etsos dos elementos.
 
-$$ Puntaje_i = \beta_0 + \beta_1 I(PREU=0)_i + u_i $$
-El modelo estimado sería:
+$$ Puntaje_i = \beta_0 + \beta_1 I(PREU=0)_i + u_i $$ El modelo estimado sería:
 
 ```{r}
 ols <- lm ( test_score ~ summerschool, data= analysisdata )
@@ -665,9 +678,7 @@ stargazer::stargazer(ols, type = "text", out="tabla1.tex")
 
 ```
 
-Stargazer es util, pero esta siendo reemplazado por otros paquetes,
-particularmente [modelsummary](https://vincentarelbundock.github.io/modelsummary/index.html). Para una refrencia extra recomiendo revisar este  [link](https://elbersb.de/public/pdf/web-7-regression-tables-graphs.pdf)
-
+Stargazer es util, pero esta siendo reemplazado por otros paquetes, particularmente [modelsummary](https://vincentarelbundock.github.io/modelsummary/index.html). Para una refrencia extra recomiendo revisar este [link](https://elbersb.de/public/pdf/web-7-regression-tables-graphs.pdf)
 
 ```{r}
 
@@ -678,7 +689,6 @@ cm <- c( "test_score" = "Test Score",
          "summerschool" = "Pre universitario" )
 ```
 
-
 ```{r}
 library(modelsummary)
 
@@ -688,17 +698,13 @@ modelsummary::modelsummary(ols, stars= TRUE, fmt=3,
 
 ```
 
-
-
-
 También permite graficar:
 
 ```{r}
 modelsummary::modelplot(ols, coef_omit = "intercept")
 ```
 
-No se ve muy bien para solo 1 modelo. Otra opcion es con el paquete
-parameters (<https://easystats.github.io/parameters/>)
+No se ve muy bien para solo 1 modelo. Otra opcion es con el paquete parameters (<https://easystats.github.io/parameters/>)
 
 ```{r}
 library(parameters)
@@ -708,9 +714,9 @@ m
   
 ```
 
-Este modelo, como ya lo revisamos de la estadística descriptiva, podemos pensar que sufre de sesgo de selección. Es posible que los estudiantes con padres más involucrados, con más educación y mayor ingreso 
+Este modelo, como ya lo revisamos de la estadística descriptiva, podemos pensar que sufre de sesgo de selección. Es posible que los estudiantes con padres más involucrados, con más educación y mayor ingreso
 
-Si solo fueran el problema la eduación de los padres y su ingreso, podríamos controlar por estos. Incluyámoslos al modelo en "cascada".  Una manera de hacerlo es con varios modelos en una lista.
+Si solo fueran el problema la eduación de los padres y su ingreso, podríamos controlar por estos. Incluyámoslos al modelo en "cascada". Una manera de hacerlo es con varios modelos en una lista.
 
 ```{r}
 
@@ -730,7 +736,6 @@ cm <- c( "test_score" = "Test Score",
          "parental_schooling" = "Parental schooling" )
 ```
 
-
 Tabla con stargazer:
 
 ```{r}
@@ -739,8 +744,6 @@ library(stargazer)
 stargazer::stargazer(naive_ols_models, type = "text", out="tabla1.tex")
 
 ```
-
-
 
 Tabla con modelsummary:
 
@@ -752,15 +755,11 @@ modelsummary::modelsummary(naive_ols_models, stars= TRUE, fmt=3,
 
 ```
 
-
 Sin embargo, si creemos que lo que también correlacona es una inobservable como la preocupación / involucramiento de los padres aun preservan el problema de la autoselección, todavía tenemos presencia de sesgo por variables omitidad.
 
 ¿Qué hacer?
 
-Vamos a revisra varias alternativas:
-- Experimental
-- Datos observacionales:
-    1.  Método de diferencias (en datos experimentales)
+Vamos a revisra varias alternativas: - Experimental - Datos observacionales: 1. Método de diferencias (en datos experimentales)
 
     [2. Logit y probit](#logit-y-probit)
 
@@ -774,24 +773,22 @@ Vamos a revisra varias alternativas:
 
     [7. Matching]
 
-## 2. Método de diferencias (en datos experimentales) 
+## 2. Método de diferencias (en datos experimentales)
 
 Un primer caso, es que antes de asistir al preuniversitario se selecciona al azar un grupo de estudiantes para enviarles una carta de invitación que recuerda sus características y detalla como participar.
 
 ¿Podría ser este un buen experimento?
 
-- Asignación aleatoria
-- Tratamiento: recibir la carta -> no es directamente el preuniversitario.  Nos permite ver el efecto causal de recibir la carta, pero no de asistir al preuniversitario. Vamos a usar una técnica para enfrentar etso posteriormente.
-
+-   Asignación aleatoria
+-   Tratamiento: recibir la carta -\> no es directamente el preuniversitario. Nos permite ver el efecto causal de recibir la carta, pero no de asistir al preuniversitario. Vamos a usar una técnica para enfrentar etso posteriormente.
 
 Por ahora, supongamos que conocer el efecto de la carta en el puntaje es una pregunta lo suficientemente interesante.
-
 
 $testscore_i=\beta_0+\beta_1Letter_i+u_i$.
 
 Este tipo de modelos podemos estimarlos con el paquete *linear modelos* `lm()` o también, con `feols()` del paquete *fixtest*
 
-### 2.1 Estimación OLS 
+### 2.1 Estimación OLS
 
 #### 2.1.2 Usando lm()
 
@@ -810,7 +807,6 @@ cm <- c( "test_score" = "Test Score",
          "parental_schooling" = "Parental schooling" )
 ```
 
-
 Tabla con stargazer:
 
 ```{r}
@@ -825,64 +821,6 @@ Podemos ver que los que recibieron la carta, tienen 0.13 más puntaje que los qu
 Si le creemos a la asignción aleatoria, entonces este efecto podría ser interpetado como casual.
 
 Para saber si la signación aletaoria efectivamente separó a dos grupos comparables de tratados y controles lo que debemos hacer es probar el **balance en obbservables**. Esto quiere decir que al menos en las variables observables, efectivamente ambos grupos no son estadísticamente diferentes antes del tratamiento.
-
-#### 2.1.2 Usando feols()
-
-En el caso de que deseemos hacer un modelamiento más complejo, como opr ejemplo incluir efectos fijos (lo revisaremos al final de la sesión) o calcular los errores estándar en cluster podemos usar la función `feols()` del paquete *fixest*. Esta función espera una fórmula de especificación de la forma:
-
-`y~x1+x2+..|fixed effects|IV specification,cluster=..`
-
-Por ejemplo, en ese caso queremos clusterizar los errores a nivel de colegio:
-
-```{r}
-# Load packages
-library(fixest)
-
-# Select data
-regdata<-filter(analysisdata,year==6)
-
-# Regression
-m1<-feols(test_score~letter+parental_lincome+female+parental_schooling, cluster="school_id",data=regdata)
-
-# Summary of regression
-summary(m1)
-
-```
-
-QUisieramos compararlo con el modelo sin dicha clusterización, podriamos hacer una mejor tabla. Aprovechamos la función `modelsummary()` y:
-
-1. Corremos ambas regresiones y guardamos los modelos en una lista. La primera es sin ajustar los errores, la segunda con cluster, la tercera con un efecto fijo por  colegio.
-
-2. Usamos `modelsummary()`para el output de las regresiones.
-
-3. Especificamos que entre paréntesis esté el error estándar y que omita la constante en la tabla.
-
-4. Definimos el formato de los números con `fmt=...`
-
-
-
-```{r}
-# Load flextable and modelsummary
-library(modelsummary)
-# Select data
-
-regdata<-filter(analysisdata,year==6)
-
-# Regressions
-models<-list(
-  m1<-lm(test_score~letter+parental_lincome+female+parental_schooling ,data=regdata),
-  m2<-feols(test_score~letter+parental_lincome+female+parental_schooling, cluster="school_id",data=regdata),
-  m3<-feols(test_score~letter+parental_lincome+female+parental_schooling|school_id, cluster="school_id",data=regdata)
-  )
-
-# Generate table
-modelsummary(models, stars = TRUE, statistic = 'std.error',
-             fmt= '%.4f',
-              coef_omit= '(Intercept)')
-```
-
-
-Podemos obsercar que no cambian los estimadores entre el modelo 1 y 2, pero si el error. Podemos ver que en el modelo 3 también cambia el estimador.
 
 ### 2.1 Balance en observables
 
@@ -900,13 +838,11 @@ Podemos notar que no hay diferencias significativas entre los grupos.
 
 Esto tendríamos que realizarlo en todas las variables y se suele presentar en una **tabla de balance**
 
-
-#### 2.3 Tabla de balance 
+#### 2.3 Tabla de balance
 
 Una tabla de balance presenta la diferencia de medias para grupos tratados y de control. Lo que deseamos es que no haya diferencias significativas antes del tratamiento en los grupos.
 
 Podemos hacer una tabla que se vea bien usando `datasummary_balance()` del paquete *modelsummary*. Cargamos tambien el paquete *estimatr* porque le permite a `datasummary_balance()` calcular e inluir pruebas t de a pares directamente en la tabla.
-
 
 ```{r}
 # Load libraries
@@ -935,8 +871,6 @@ Los reslutados de la tabla sugieren que no hay diferencias significativas entre 
 
 Y como antes, podríamos directaente agregar la opción `outpu=tab_balancing.docx` para exportarla en word (o latex).
 
-
-
 #### 2.4 Aproximación gráfica
 
 Podemos ver el efecto causal propuesto en la siguiente gráfica. En los años antes del tratamiento son iguales y en los años posteriores, las distribuciones se empiezan a separar.
@@ -958,6 +892,179 @@ ggplot(analysisdata,aes(y=as.factor(year),x=test_score,fill=as.factor(letter) ))
         theme(legend.position="top",aspect.ratio=4/3,plot.title = element_text(hjust = 0.5))
 ```
 
+## 3. Efectos fijos, aleatorios y modelos jerárquicos
+
+Muchas veces, los datos estan agrupados en diferentes categorías o dimensiones.
+
+En nuestro caso los estudiantes están agrupados en colegios y es esperable que dentro de un colegio los resultados de dichos estudiantes estén correlacionados. Esto también ocurre al tener datos temporales o cualquier forma de agrupación lógica de la información.
+
+Podemos ignorar esta estructura en los datos y simplemente considerarlos como un conjunto de unidades comparables, es decir tratarlo como un **pooled cross-section**. Si las diferencias entre grupos no son sistemáticas, no deberíamos observar diferencias, sin embargo esto puede estar haciendo que caigamos en problemas como la *paradoja de Simpson* o el *Mathew effect*
+
+Para profundizar recomiendo: https://ds4ps.org/pe4ps-textbook/docs/p-040-fixed-effects.html o el capítulo
+
+![](images/FEproblems.png)
+
+En nuestro caso, tenemos por ejemplo 30 colegios en los datos. 
+
+Otro punto es considerar que no solo el efecto está modulado por la organziación de agrupación de la data, sino también los errores. Esto lo llamamos clusterizar.
+
+#### 3.1.2 Estimación usando lm()
+
+Si cada grupo está afectando los resultados, calculemos el efecto el un OLS solo del año 5, un pooled en los años hasta el 5 y en este ultimo, incluyamos un efecto fijo por colegio  y luego por año.
+
+```{r}
+
+# No siempre necesitamos hacer una lista de
+OLS_year5_data <-filter(analysisdata,year==5)
+
+OLS_year5 = lm( test_score ~ letter , data= OLS_year5_data )
+
+
+# Para el pooled, usemos todos los años antes del 5
+
+POLS_data <-filter(analysisdata,year<=5)
+
+Pooled_OLS = lm (  test_score ~ letter , data= POLS_data )
+
+# Fixed effect por colegio
+
+FE = lm (  test_score ~ letter + factor(school_id), data= POLS_data )
+
+# Usemos stargazer para la tabla esta vez
+
+stargazer( OLS_year5, Pooled_OLS, FE,
+           type = "text", 
+           dep.var.labels = ("Test score"),
+           column.labels = c("Cross-Sectional OLS (year 5)", "Pooled OLS", "School FE"),
+          covariate.labels = c("Intercept", "letter"),
+           keep =c("Intercept", "letter"),
+           omit.stat = "all", 
+           digits = 2, intercept.bottom = FALSE )
+
+```
+
+
+
+#### 3.1.2 Estimación usando feols()
+
+En el caso de que deseemos hacer un modelamiento más complejo, como opr ejemplo incluir efectos fijos (lo revisaremos al final de la sesión) o calcular los errores estándar en cluster podemos usar la función `feols()` del paquete *fixest*.
+
+El paquete *fixest* permite la inclusión de múltiples efectos fijos y clusterización de errores es, nosotros usaremos la función `feols()`
+
+Esta función espera una fórmula de especificación de la forma:
+
+`y~x1+x2+..|fixed effects|IV specification,cluster=..`
+
+Por ejemplo, en ese caso queremos clusterizar los errores a nivel de colegio:
+
+```{r}
+# Load packages
+library(fixest)
+
+# Select data
+regdata<-filter(analysisdata,year==6)
+
+# Regression
+m1<-feols(test_score~letter+parental_lincome+female+parental_schooling, cluster="school_id",data=regdata)
+
+# Summary of regression
+summary(m1)
+
+```
+
+Quisieramos compararlo con el modelo sin dicha clusterización, podriamos hacer una mejor tabla. Aprovechamos la función `modelsummary()` y:
+
+1.  Corremos ambas regresiones y guardamos los modelos en una lista. La primera es sin ajustar los errores, la segunda con cluster, la tercera con un efecto fijo por colegio.
+
+2.  Usamos `modelsummary()`para el output de las regresiones.
+
+3.  Especificamos que entre paréntesis esté el error estándar y que omita la constante en la tabla.
+
+4.  Definimos el formato de los números con `fmt=...`
+
+```{r}
+# Load flextable and modelsummary
+library(modelsummary)
+# Select data
+
+regdata<-filter(analysisdata,year==6)
+
+# Regressions
+models<-list(
+  m1<-lm(test_score~letter+parental_lincome+female+parental_schooling ,data=regdata),
+  m2<-feols(test_score~letter+parental_lincome+female+parental_schooling, cluster="school_id",data=regdata),
+  m3<-feols(test_score~letter+parental_lincome+female+parental_schooling|school_id, cluster="school_id",data=regdata)
+  )
+
+# Generate table
+modelsummary(models, stars = TRUE, statistic = 'std.error',
+             fmt= '%.4f',
+              coef_omit= '(Intercept)')
+```
+
+Podemos obsercar que no cambian los estimadores entre el modelo 1 y 2, pero si el error. Podemos ver que en el modelo 3 también cambia el estimador.
+
+#### 3.1.3 Elementos clave de los efectos fijos:
+
+Los elementos centrales de efectos fijos son:
+
+- Usar efectos fijos nos permite controlar por todas las características invariantes en la unidad de analisis.
+
+- Asumimos que algunas de las características de la entidad que estamos estudiando afectan nuestra prediccion y necesitamos controlar por estas.  Notar que efectos fijos nos permite entonces, capturar todas las caracteristicas que no varian en el tiempo en dicha entidad reduciendo indirectamente el sesgo de variables omitidas.
+
+- Importante saber que no podemos estudiar el efecto de estas caracter+pisticas que no varian en el tiempo usando efectos fijos. Por ejemplo, no podríamos estudiar ni el impacto del sexo, ni de la educación de los padres en este ejemplo. Como dichas variables no cambian en el tiempo, la constante que agregamos en el efecto fijo absorve dicho efecto tambien, pues son perefectaente colineares.
+
+-  Por esto, es importante tener en cuenta que los efectos fijos estan diseñados para estudiar características  que cambian en el tiempo para una entidad.
+
+_ finalmente. efectos fijos tambien asume que cada entidad es única, tal que el error de dicha entidad es constante y no se correlaciona con el error de otra entidad. Es decir, asume independencia entre entidades. 
+
+### 3.2 Random vs fixed effects
+
+CUn supuesto subyacente de la implementación de efectos fijos es que no hay correlación entre los errores de las entidades de agrucación y las constantes, es decir, que cada colegio es indepediente del otro (en nuestro caso).
+
+Este supuesto se puede testear estadísticamente mediante un modelo aletrnativo que, si bien calcula agrupando los datos permite que los efectos sean aleatorios, es decir calculamos asumiendo que las diferencias entre las entidades afectan a la variable dependiente y que hau correlación entre el error de las entidades y sus constantes. Podemos usar la función `plm()` del paquete plm especificando model="random".
+
+Necesitamos que el panel esté bien conformado para poder aplicar este paquete, es decir tener una observación por unidad dimensionada y variables que cambien intra y entre grupos.
+
+```{r}
+#regdata <- analysisdata %>%
+#            group_by(school_id, year)%>%
+#            dplyr::summarize( test_score = mean(test_score), summerschool= mean(letter), female= mean(female), suma=n() ) %>%
+#            ungroup()
+
+#head(regdata)
+
+```
+
+
+
+```{r}
+# cargamos la librería
+#library(plm)
+
+# Para especificar un modelo correctaente, necesitamos variables entre e intra entidades. EN este caso, agruparemos la data por colegio y año.
+
+#regdata <- analysisdata %>%
+#           group_by(school_id, year) %>%
+#           summary( test_score = mean(test_score), summerschool=test_score ) %>%
+#           ungroup()
+
+
+#Fixed effects
+#fixed <- plm( test_score ~ summerschool, data=regdata, index=c("school_id", "year"), model="within" )
+
+#Random effects
+#random <- plm( test_score ~ summerschool, data=regdata, index=c("school_id", "year"), model="random" )
+
+
+```
+
+Podemos comparar ambos modelos mediante la prueba de Hausman para decidir que modelo es mejor. Generalmente se prefiere efecto fijo ya que es más eficiente, si ambos están correctos.
+
+Algunos otros elementos a tener en cuenta:
+- Los efectos aleatorios permiten icnluir elementos que son invariables en el tiempo dado que asume que el error de la entidad no está correlacionado con el predictor.
+- Los efectos aleatorios están influenciados por sesgo de variable omitida, ya que no estamos incluyendo directamente las dummies.
+
 
 ## 3. Logit y probit {#logit-y-probit}
 
@@ -971,8 +1078,7 @@ $$ preuniversitario_i = g(letter_i)+u_i $$
 
 Una primera aproximación sería sencillamente estimar un modelo lineal:
 
-$$ preuniversitario_i = \beta_0+ \beta_1 letter_i + \gamma' X_i+u_i $$
-Ya sabemos como hacerlo, simplemente usamos lm() o felm(). Aprovechemos esta oportunidad para agregar una fila con la media de la variable dependiente, este es genralemnte un elemento importante a incluir cuando estamos rabajando con variables dicotómicas ya que pone en contexto el análisis. Esto lo hacemos con el parámetro `add_rows=...`
+$$ preuniversitario_i = \beta_0+ \beta_1 letter_i + \gamma' X_i+u_i $$ Ya sabemos como hacerlo, simplemente usamos lm() o felm(). Aprovechemos esta oportunidad para agregar una fila con la media de la variable dependiente, este es genralemnte un elemento importante a incluir cuando estamos rabajando con variables dicotómicas ya que pone en contexto el análisis. Esto lo hacemos con el parámetro `add_rows=...`
 
 ```{r}
 
@@ -994,9 +1100,9 @@ modelsummary(models, stars = TRUE,statistic = 'std.error',
 
 Podemos ver que recubir la carta aumenta la probabilidad de asistir al preuniversitario en 44%, lo que es un incremento de casi un 100% considerando que la media de dicha variable era 0.46.
 
-A pesar de su gran interpretabilidad, los modelos de probabilidad lineal tienen varios problemas: predicciones pueden salir del rango [0,1] y que son heterocedasticos por definición. 
+A pesar de su gran interpretabilidad, los modelos de probabilidad lineal tienen varios problemas: predicciones pueden salir del rango \[0,1\] y que son heterocedasticos por definición.
 
-Una alternativa a este modelamiento es usar una forma funciónal que asegure que la predicciones estén en el rango [0,1] es con logit o probit.
+Una alternativa a este modelamiento es usar una forma funciónal que asegure que la predicciones estén en el rango \[0,1\] es con logit o probit.
 
 ### 3.2 Logit y probit
 
@@ -1013,7 +1119,6 @@ summary(logit_results)
 ```
 
 El problema es que estos parámetros no son directamente interpretables porque son las pendientes en la función logistica. Para esto, calculamos los efectos marginales.
-
 
 ### 3.3 Efectos marginales
 
@@ -1043,7 +1148,6 @@ modelsummary(list("LPM"=lpm,"Logit"=mfx_logit,"Probit"=mfx_probit))
 
 Acá podemos ver una tabla con los tres modelos y compararlos.
 
-
 ## 4. Variables Instrumentales
 
 Volviendo a nuestra pregunta de investigación inicial queríamos conocer elefecto de asistir al preuniversitario en los puntajes, no de la carta.
@@ -1052,12 +1156,8 @@ Sin embargo, sabemos que la carta se asignó aleatoriamente y que afecta a la pr
 
 Es más, podríamos no realizar ninguna estimación y recurrir a lo ya obtenido:
 
-- Sabemos que el estimador de la forma reducida:
-$$ testscore_i = \beta_0 + \beta_1 letter_i + u_i $$
-es 0.2 SD.}
-- En el punto anterior calculamos la primera etapa:
-$$ preuniversitario_o = \alpha_0 + \alpha_1 letter_i + \mu_i$$
-que corresponde aproximadamente a 0.4.
+-   Sabemos que el estimador de la forma reducida: $$ testscore_i = \beta_0 + \beta_1 letter_i + u_i $$ es 0.2 SD.}
+-   En el punto anterior calculamos la primera etapa: $$ preuniversitario_o = \alpha_0 + \alpha_1 letter_i + \mu_i$$ que corresponde aproximadamente a 0.4.
 
 Entonces, el **Estimador de Wald** de variables instrumentales es: IV=0.2/0.4 =0.5
 
@@ -1065,8 +1165,7 @@ Podríamos obtener este estimador directamente ahora desde los datos. Vamos a re
 
 ### 4.2 IV usando ivreg()
 
-Primero usemos la función del paquete AER (Applied Economics with R). La sintaxis es:
-- ` ivreg(outcome equation| exogenous variables, data)`
+Primero usemos la función del paquete AER (Applied Economics with R). La sintaxis es: - `ivreg(outcome equation| exogenous variables, data)`
 
 ```{r}
 # Load the AER package
@@ -1081,7 +1180,6 @@ summary(ivreg(test_score~summerschool+female+parental_lincome+parental_schooling
 ```
 
 Observamos que el estimador es cercano a 0.5.
-
 
 ### 4.2 IV usando feols()
 
@@ -1100,13 +1198,11 @@ summary(m1)
 
 Los coeficientes son iguales que antes, pero los errores estándar cambiaron ya que los clusterizamos al nivel del colegio. Notemos que `feols()` nos indica que el F-stat del isntrumento excluido es 687 (cumpliendo la condición de relevancia del isntrumento).
 
-
-###  4.3 Tabla de reporte IV
+### 4.3 Tabla de reporte IV
 
 Terminemos la sección de IV con una tabla que muestre la correlación pira entre la asistencia al preuniversitario y puntajes (ingenuo), la forma reducida, la primera etapa y la estimación de variable instrumental
 
 Notemos que usaremos `coef_map= c( )` para renombrar las variables en la tabla, espeficicar los coeficientes a incluiry permitir que dos coeficientes con diferente nombre aparezcan en la misma fila (preuniversitario y fit_preuniversitario)
-
 
 ```{r}
 # Estimate OLS
@@ -1132,22 +1228,17 @@ modelsummary(IVresults, stars = TRUE,statistic = 'std.error',
              fmt= '%.4f',coef_map=cm, output =      )
 ```
 
-La primera columna nos muestra que si ignoramos el problema de selección y etsimamos la regresión directamente entre el puntaje y la asistencia al preuniversitario (condicional en los controles) nos dá un efecto promedio de 0.78 SD. Como sería esperable, este efecto está **sobrestimado** pueso incluye el sesgo por selección, lo que podemos comprobar al comprarlo con el estimador de IV de 0.47SD. 
+La primera columna nos muestra que si ignoramos el problema de selección y etsimamos la regresión directamente entre el puntaje y la asistencia al preuniversitario (condicional en los controles) nos dá un efecto promedio de 0.78 SD. Como sería esperable, este efecto está **sobrestimado** pueso incluye el sesgo por selección, lo que podemos comprobar al comprarlo con el estimador de IV de 0.47SD.
 
 Las estadísticas descriptivas que estudiamos, sugieren que quienes asistieron al preuniversitario ya tenían mejores puntajes antes del preuniversitario y que sus padres tenían mayores ingresos y años de educación. Entonces, el coeficiente en la primera columna no solo captura el efecto rpopio del preuniversitario, sino todas estas caracteristicas inobservables correlacionadas positivamente con los puntajes y con la asistencia al preuniversitario.
 
-## 5. Regresión Discontinua
-
-
-
 ## 6. Diferencias en Diferencias
 
-La estrategia que tomamos con IV es bastante convincente, porque se basa en un exterimento aleatorio (RCT) y el coeficiente "ingenuo" era mayor que el de IV, como era esperable. 
+La estrategia que tomamos con IV es bastante convincente, porque se basa en un exterimento aleatorio (RCT) y el coeficiente "ingenuo" era mayor que el de IV, como era esperable.
 
-¿Pero que hacemos si no contamos con una carta? Imaginemos que no tenemos la carta, pero si contamos con mediciones antes y despues del preuniversitario (como lo hacemos). Podemos usar la estrategia  de **DiD** .
+¿Pero que hacemos si no contamos con una carta? Imaginemos que no tenemos la carta, pero si contamos con mediciones antes y despues del preuniversitario (como lo hacemos). Podemos usar la estrategia de **DiD** .
 
 Estaría dada por la siguiente especificación:
-
 
 $$test_score=\beta1+\beta_2summerschool_i+\beta_3after_i+\beta_4after_i\times summerschool+\gamma'X_i+u_i$$
 
@@ -1179,7 +1270,7 @@ Generalmente, no contamos con tantas mediciones para tener una evaluación empir
 
 ### 6.2 Estimación modelo de diferencias en diferencias.
 
-Primero, en un caso más similar, usemos solo las estimaciones justo antes y una despues del preuniversitario usando la función `lm()`. 
+Primero, en un caso más similar, usemos solo las estimaciones justo antes y una despues del preuniversitario usando la función `lm()`.
 
 Primero, creamos la variable dummy de después usando `mutate()` y `ifelse()`.
 
@@ -1198,12 +1289,9 @@ m<-lm(test_score~summerschool+after+afterXsumerschool,data=df)
 summary(m)
 ```
 
+Bien, observamos que el estiamodr de DIF es de 0.75SD. Observamos que es mayor que el que obtuvimos en IV y menor que el de OLS, pero por poco.
 
-Bien, observamos que el estiamodr de DIF es de 0.75SD. Observamos que es mayor que el que obtuvimos en IV y menor que el de OLS, pero por poco. 
-
-Veamos que ocurre si ahora usamos todos los datos disponibles. Podemos usar la función `feols()` para estimar con todos los años (también podriamos usar `lm()`). Este es el enfoque tradiciona, con una variable que indica después del tratamiento y la interacción entre después y tratamiento y una dummy por tratamiento. En el segundo modelo ponemos la otra opción, que es agregar un efecto fijo temporal en bez de la dummy de después. En el 
-tercer modelo, agregamos controles.
-
+Veamos que ocurre si ahora usamos todos los datos disponibles. Podemos usar la función `feols()` para estimar con todos los años (también podriamos usar `lm()`). Este es el enfoque tradiciona, con una variable que indica después del tratamiento y la interacción entre después y tratamiento y una dummy por tratamiento. En el segundo modelo ponemos la otra opción, que es agregar un efecto fijo temporal en bez de la dummy de después. En el tercer modelo, agregamos controles.
 
 ```{r}
 
@@ -1233,17 +1321,191 @@ modelsummary(list(m1,m2,m3,m4), stars = TRUE,statistic = 'std.error',
 
 ```
 
-Podemos ver que el efecto de tratamiento es cercano a 0.6SD, lo que se acerca más al de IV y se aleja aun más que del OLS ingenuo. 
+Podemos ver que el efecto de tratamiento es cercano a 0.6SD, lo que se acerca más al de IV y se aleja aun más que del OLS ingenuo.
 
 La última columna (4) excluye el año 5 donde veiamos la desviación en las tendencias. Esto nos da un estimador aun más cerca del de IV.
-
-
-## 7. Efectos fijos, aleatorios y modelos jerárquicos
 
 
 
 ## 8. Matching
 
+Otra alternativa de análisis es mediante el matching. EN este caso, buscaremos para cada individuo que fue al preuniversitario algun compañero similar en observables que no haya asisitido. 
+
+Hay dos formas de hacerlo, buscar alguien que sea exactamente igual (exact matching) o que la probabilidad de asistir al preuniversitario basado en un set de observables sea igual (propensity score matching). Vamos a ver ambos.
+
+Una revisión completa de matching está acá: [ds4ps](https://ds4ps.org/pe4ps-textbook/docs/p-080-matching#matchit-function-in-r)
+
+La estrategia de matching sigue los siguientes dos pasos:
+
+1 -  Para cada tratado encontramos a su "clon". Para esto hay dos alternativos, usamos uno (o varios) match exactos o usamos el propensity score matching.
+2 -  Usando los "clones" calculamos calculamos el ATE.
+
+
+Lo primero que deberíamos hacer entonces es obtener los clones. 
+Vamos a trabajar con el paquete [*MatchIT* ](https://kosukeimai.github.io/MatchIt/articles/MatchIt.html) (Muy recomendable revisar su documentación)
+
+
+```{r}
+#cargar el paquete
+
+library("MatchIt")
+```
+
+ 
+### 8.1 Exact matching
+
+
+Un exact match, lo que hace es identificar uno ( varios) contrafactuales que se encuentren más cercanos a cada individuo tratado en la muestra.
+
+Lo que hacemos es definir en que variables vamos a considerar el match. En este caso lo haremos por colegio, sexo, educacion de los padres e ingreso de los padres.
+
+```{r}
+
+# Definamos un matching con todo por defecto.
+
+a <- MatchIt::matchit( summerschool ~ school_id + female + parental_schooling + parental_lincome, data=analysisdata  )
+
+a
+
+```
+
+Observemos que lo que obtenemos es un objeto de matchit usando por edefto el vecino más cercano sin reemplazo.
+
+```{r}
+summary(a)
+```
+
+
+Podemos graficar el balance
+
+```{r}
+plot(summary(a))
+```
+
+
+### 8.2 Propensity score matching
+
+
+From the package MatchIt we will use the function matchit to create the propensity scores and the new dataset with the matched observation.
+
+Note the function code. First, we specificy the logit model to calculate the propensity scores as we did before in section @ref:creating-matching-score. We then specify the method to match the scores. We will use the nearest neighbor method (see @ref:nearest-neighbor-matching-and-caliper-distance). The default method is “withour replacement”.
+
+```{r}
+#m1 = matchit(df$school ~ df$income + df$occ_score + df$y_educ, method = "nearest", data = df)
+
+```
+
+We can see the outcome of the process by using summary.
+
+Have a look at the column “Mean Diff” and compare results in the “Summary of balance for all data” vs “Summary of balance for matched data”. You can see that the mean difference is drastically reduced in the matched data.
+
+We can also look at the “Sample sizes” summary at the very end of the output. We started with 8841 control cases and 1159 treated cases. The algorithm matched all treated cases with only one control case, discarding 7682 observations.
+
+```{r}
+#summary(m1)
+```
+
+
+Once the algotrithm has calculated and matched the propensity scores, we can create a new dataset that contains all matched observations using the function match.data.
+
+
+```{r}
+#m1data = match.data(m1)
+```
+
+
+ow that we have the dataset with the matched observations, we can have another look at the covariates and compare the treated and untreated cases.
+
+Para esto, hacemos una tabla de balance como lo hicismos anteriormente:
+
+
+
+```{r}
+#t.test(m1data$y_educ[m1data$school==1], m1data$y_educ[m1data$school==0], paired = T)
+```
+
+
+We can see this graphically by looking at the dentisy plots for each independent variables in the treated and untreated group.
+
+```{r}
+#m1data$school = as.factor(m1data$school2)
+# 
+# ggplot(m1data, aes(x = m1data$y_educ, fill = m1data$school2)) +
+#     geom_density(position="identity", alpha=0.6) +
+#     scale_fill_brewer(palette="Dark2") +
+#     ggtitle("Density plot of years of education, by group") +
+#     scale_x_continuous(name = "Years of education",
+#     breaks = seq(14, 25, 2),
+#         limits=c(14, 25)) +
+#     scale_y_continuous(name = "Density") +
+#         theme(plot.title = element_text(size = 14, face = "bold"),
+#               text = element_text(size = 12)) +
+#     guides(fill=guide_legend(title=NULL))+ 
+#     scale_fill_discrete(labels=c("Control - Public School", "Treatment - Private School"))
+```
+
+
+```{r}
+# ggplot(m1data, aes(x = m1data$income, fill = m1data$school2)) +
+#     geom_density(position="identity", alpha=0.6) +
+#     scale_fill_brewer(palette="Dark2") +
+#     ggtitle("Density plot of income, by group") +
+#     scale_x_continuous(name = "Income",
+#     breaks = seq(11, 13, 0.5),
+#         limits=c(11, 13)) +
+#     scale_y_continuous(name = "Density") +
+#         theme(plot.title = element_text(size = 14, face = "bold"),
+#               text = element_text(size = 12)) +
+#     guides(fill=guide_legend(title=NULL))+ 
+#     scale_fill_discrete(labels=c("Control - Public School", "Treatment - Private School"))
+```
+
+
+### 8.2.2 Efecto tratamiento de matching
+
+
+
+Now that we have a matched dataset we can calculate the effect of treatment ( = being in a private school). As before, we can do a simple t-test across the two groups and compare the math skill scores between students in a private school and students in a public school.
+
+
+```{r}
+# t.test(m1data$math_skills[m1data$school==1], m1data$math_skills[m1data$school==0], paired = T)
+
+```
+
+
+he t-test shows that there is a statistically significant difference across the two groups (p-value < 0.001). The difference is equal to -0.34, suggesting that students attending a private school report, on average, a math skills score that is 4.33 points lower that students in public schools.
+
+Obtenemos este mismo resultado al realizar la regresión con la dummy de tratamiento:
+
+```{r}
+
+```
+
+
+
+As before, we can look at results in a graphical form below. The treatment density curve (blue) tend more towards lower scores, marked on the left side of the graph, compared to the control (pink) curve.
+
+```{r}
+# ggplot(m1data, aes(x = m1data$math_skills, fill = m1data$school2)) +
+#     geom_density(position="identity", alpha=0.6) +
+#     scale_fill_brewer(palette="Dark2") +
+#     ggtitle("Density plot of math skill score, by group") +
+#     scale_x_continuous(name = "Math skill score",
+#     breaks = seq(0, 100, 20),
+#         limits=c(0, 100)) +
+#     scale_y_continuous(name = "Density") +
+#         theme(plot.title = element_text(size = 14, face = "bold"),
+#               text = element_text(size = 12)) +
+#     guides(fill=guide_legend(title=NULL))+ 
+#     scale_fill_discrete(labels=c("Control - Public School", "Treatment - Private School"))
+```
+
+## 5. Regresión Discontinua
+
+La última técnica que usaremos el la regresión discontinua. Vamos a hacer un ejemplo muy corto, pero necesitaremos más datos.
+
+Pensemos que para asistir al preuniversitario, los estudiantes tenían que dar una prueba diagnóstico y se invitaron a participar del preuniversitario que los estudiantes solo que sacaron hasta 500 puntos.
 
 
 # IV. Presentación de los resultados
