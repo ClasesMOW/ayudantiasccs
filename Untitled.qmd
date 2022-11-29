@@ -1,0 +1,68 @@
+---
+title: "Data transformations"
+format: html
+editor: visual
+---
+
+# Explicación
+
+En este documento simulo y creo la data para el análisis de los estudiantes.
+La idea es mantener la estructura general de los datos, pero vamos a cambiar el tema de las pruebas estandarizaas.
+
+
+
+## School data 1
+
+En este data set, mantendremos todo excepto los puntajes en pruebas. 
+En nuestra historia, estos son los puntajes en las pruebas 
+
+Estos los vamos a estandarizar y pasar a puntajes PSU (max 800, mediana 500 )
+
+```{r}
+
+# load readr package
+library("readr", "here")
+
+#prueba el directorio que te dice con here
+here::here()
+```
+
+Entonces, dentro de `here("[Escribes el directorio relativo]")` actuará como el directorio relativo sin errores. Entonces, cargamos los datos y los asignamos a un data frame.
+
+```{r}
+
+school_data_1 <- read.csv(here::here("data_raw/school_data_1.csv"))
+
+```
+
+
+```{r}
+# Standardize test score
+# Group analysisdata by year
+analysisdata<-group_by(analysisdata,year)
+
+# Create a new variable with mutate
+analysisdata<-mutate(analysisdata, test_score=(test_score-mean(test_score))/sd(test_score))
+
+```
+
+
+
+
+```{r}
+# Standardize test score
+# Group analysisdata by year
+analysisdata<-group_by(analysisdata,year)
+# Create a new variable with mutate
+analysisdata<-mutate(analysisdata, test_score=(test_score-mean(test_score))/sd(test_score))
+# show mean of test_score
+print(paste("Mean of test score:",mean(analysisdata$test_score)))
+```
+
+
+Vamos a cambiarle el nombre de summerschool a preu.
+
+
+
+
+

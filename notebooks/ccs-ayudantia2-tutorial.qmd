@@ -41,35 +41,35 @@ Se recomienda crear un fork al repositorio y trabajar en su propia rama.
 
 -   Lo métodos a cubir son:
 
-    [1. Regresión lineal y método de diferencias (en datos experimentales)](#regresión-lineal-y-método-de-diferencias-en-datos-experimentales)
+    1. Regresión lineal y método de diferencias (en datos experimentales)
 
-    [2. Logit y probit](#logit-y-probit)
+    2. Logit y probit
 
-    \[3. Variables Instrumentales\]
+    3. Variables Instrumentales
 
-    \[4. Regresión Discontinua\]
+    4. Regresión Discontinua
 
-    \[5. Diferencias en Diferencias\]
+    5. Diferencias en Diferencias
 
-    \[6. Efectos fijos, aleatorios y modelos jerárquicos\]
+    6. Efectos fijos, aleatorios y modelos jerárquicos
 
-    \[7. Matching\]
+    7. Matching
 
--   Los datos y notebook son descargables, así que se recomienda correr todo en tu propio computador o en una instancia en la nube.
+-   Los datos y notebook son descargables en el siguiente [repositorio de proyecto](https://github.com/ClasesMOW/ayudantia2ccs)  así que se recomienda correr todo en tu propio computador o en una instancia en la nube.
 
--   Este tutorial es una adaptación del trabajo de [Hans H. Sievertsen](https://hhsievertsen.shinyapps.io/applied_econ_with_R_dynamic), con la adición de métodos de matching y con cambios a la situación a analizar.
+-   Este tutorial es una adaptación del trabajo de [Hans H. Sievertsen](https://hhsievertsen.shinyapps.io/applied_econ_with_R_dynamic), agregando la estimación con métodos de de métodos de matching y algunos cambios a la situación a analizar.
 
 <br>
 
 ## 1 Pregunta de investigación y datos
 
-Vamos a usar una situación ficticia, con datos simulados para poder aplicar de manera consisa los diferentes tipos de estrategias de identificación revisadas en clase. ALgunas (que se supone ya manejan) las revisaremos muy rápidamente y en otras, vamos a tener mayor énfasis.
+Vamos a usar una situación ficticia, con datos simulados para poder aplicar de manera consisa los diferentes tipos de estrategias de identificación revisadas en clase. Algunas (que se supone ya manejan) las revisaremos muy rápidamente y en otras, vamos a tener mayor énfasis.
 
 ### 1.1 Pregunta de investigación
 
 Nuestro objetivo es responder la siguiente pregunta **ficticia** de investigación:
 
-> Asistir a preuniversitario mejora los resultados académicos?
+> Asistir a cursos de verano mejora los resultados académicos?
 
 Para responder esta pregunta, usaremos unos datos **ficticios y simulados**
 
@@ -79,29 +79,29 @@ La pregunta de investigación se inspira en trabajos como el de [Matsudaira (200
 
 El **escenario ficticio** es el siguiente:
 
--   Para un conjunto de colegios en una comuna, existe la opción de asistir a pre-unirversitario intensivo los fines de semana durante el segundo semestre de 4to medio.
--   El preuniversitario se enfoca en preparar la prueba de admisión a la universidad vigente (PSU en ese momento)
--   El preuniversitario es gratuito, pero para ser matriculados requiere que los padres se involucren en un proceso.
--   Estamos interesados en testear el impacto de la participación en el preuniversitario en los resultados académicos de los estudiantes.
+-   Para un conjunto de colegios en una comuna, existe la opción de asistir a un curso de verano intensivo durante el verano entre 5 y 6to básico.
+-   El curso de verano se enfoca en mejorar las habilidades académicas de preparar la prueba de admisión a la universidad vigente (PSU en ese momento)
+-   El curso de verano es gratuito, pero para ser matriculados requiere que los padres se involucren en un proceso.
+-   Estamos interesados en testear el impacto de la participación en el curso en los resultados académicos de los estudiantes.
 
 ### 1.3 Datos ficticios dispobibles
 
 1.  school_data_1.csv
 
 -   Usamos esta data para ejemplificar como cargar data guardada en formato csv.
--   Este dataset tiene información sobre cada individuo (con identificador id), la escuela a la que asiste, un indicador si participó en el preuniversitario, sexo, ingreso del hogar, educación de los padres, resultados en diagnostico PSU a incios del año escolar y el puntaje efectivamente obtenido en la prueba oficial.
+-   Este dataset tiene información sobre cada individuo (con identificador id), la escuela a la que asiste, un indicador si participó en el curso de verano, sexo, ingreso del hogar (en logaritmo), educación de los padres, resultados en una prueba estandarizada que se realiza a nivel de la comuna tanto para el año 5 como para el año 6.
 
 2.  school_data_2.dta
 
 -   Usamos esta data para ejemplificar como cargar data guardada en formato STATA.
 -   Este dataset tiene información de cada individuo (con identificador id).
--   Este dataset tiene la información si el individuo recibió la carta de invitación para participar del preuniversitario.
+-   Este dataset tiene la información si el individuo recibió la carta de invitación para participar del curso de verano.
 
 3.  school_data_3.xlsx
 
 -   Usamos este dataset para practicar como cargar datos guardados en formato Microsoft Excel.
 -   Este dataset incluye datos sobre cada individuo (con identificador id)
--   Este dataset tiene información de rendimiento académico antes y después del preuniversitario.
+-   Este dataset tiene información de rendimiento académico antes y después del curso de verano.
 
 # II. Preparación de los datos
 
@@ -111,15 +111,15 @@ En la vida real, este proceso suele ser bastante largo, laborioso e implica volv
 
 En nuestro caso, será bastante lineal y directo, ya que son datos ficticios simulados. Pero en la realidad, no suele ser así.
 
+## 0. Crear el proyecto y clonar el repositorio
+
+Este proyecto está sustentado en el repositorio de github. Clónelo y luego carguelo en su computador.
+
 ## 1 Cargar los datos
 
 ### 1.1 Intalar y cargar paquetes
 
 Para poder cargar los datos, necesiamos los paquetes adecuados. Siempre hay multiples formas de hacer las cosas en cualquier lenguaje o programa. En este caso, usaremos la función `read_csv()` del paquete *readr*. Para poder usarlo, debemos estar seguros de que está instalado.
-
-```{r}
-
-```
 
 Si no está instalado, podemos hacerlo con la función `install.packages("[nombre paquete a instalar]")`
 
@@ -147,7 +147,7 @@ PS. notemos que tambien estamos incluyendo comentarios en los bloques de código
 
 ```{r}
 
-# load readr package
+# cargar readr package
 library("readr", "here")
 
 #prueba el directorio que te dice con here
@@ -177,7 +177,7 @@ Una segunda alternativa es descargar y cargar los datos directamente en R desde 
 ```{r}
 #| eval: false
 
-school_data_1 <- read.csv("https://github.com/ClasesMOW/ayudantiasccs/blob/main/data_raw/school_data_1.csv")
+#school_data_1 <- read.csv("https://github.com/ClasesMOW/ayudantiasccs/blob/main/data_raw/school_data_1.csv")
 ```
 
 ### 1.3 Cargar datos STATA
@@ -193,7 +193,7 @@ school_data_2<- haven::read_dta(here::here("data_raw/school_data_2.dta"))
 Usemos el comando `tail()` para ver las últimas 10 entradas.
 
 ```{r}
-# print the 8 rows in the tail
+# print las últimas 8 filas
 tail(school_data_2,n=10)
 ```
 
@@ -220,11 +220,10 @@ Una alternativa es usar la función nativa `merge( )`. En esta función, primero
 Veamos un ejemplo con los dos primeros datasets. Luego usemos `dim()` para conocer las dimensiones del nuevo dataset unido en términos de filas y columnas.
 
 ```{r }
-
-# merge school_data_1 with school_data_2
+# Unir school_data_1 con school_data_2
 school_data_merged <-merge(school_data_1,school_data_2, by="person_id")
 
-# dimensions
+# Revisamos las dimensiones
 dim(school_data_merged)
 ```
 
@@ -240,13 +239,13 @@ Entonces, en el siguiente bloque:
 Notar que acá unimos por las columnas *person_id* y *school_id*. Esto no es realmente necesario porque cada estudiante con id única tiene un solo colegio, pero sirve de ejemplo en como usar más de una columna mediante `c()`. 3. Usamos la función `summary()` para obtener una estadística descriptiva de las variables en el dataset unido.
 
 ```{r }
-# Merge school_data_1 and school_data_2 and save as school_data_merged 
+# Merge school_data_1 y school_data_2 y guardamos como school_data_merged 
 school_data_merged<-merge(school_data_1,school_data_2,by="person_id")
 
-# Merge school_data_3 with school_data_merged
+# Merge school_data_3 con school_data_merged
 school_data_merged<-merge(school_data_merged,school_data_3,by=c("person_id","school_id"))
 
-# summary statistics
+# Estadísticas descriptivas de cada variable
 summary(school_data_merged)
 ```
 
@@ -269,10 +268,10 @@ school_data_merged <- school_data_1 %>%
 
 Ahora que hemos unido las bases de datos, trataremos de que satisfazgan los principios de [Tidy Data](https://vita.had.co.nz/papers/tidy-data.pdf).
 
-A data frame is said to be tidy (Hadley's paper) if the following conditions are met:
+Un data frame se considera "tidy" (Según Hadley) si se cumplen las siguientes condiciones:
 
--   A single column (variable) contains all measures of the same data feature of the observations.
--   A row contains measures of the same observation.
+-   Cada columna (variable) contiene todas las medidas de la misma data/feature/caracteristica de las observaciones.
+-   Cada fila contiene medidas de la misma unidad de observación.
 
 (puedes profundizar y ver más ejemplos aplicados en <https://sscc.wisc.edu/sscc/pubs/DWE/book/6-2-tidy-data.html> )
 
@@ -281,7 +280,8 @@ Uno de estos, es que cada columna debe ser una variable y cafa fila una unidad d
 Si inspeccionamos el número de columnas:
 
 ```{r}
-# Alternatively we can use the nrow() functions to get the number of columns
+# Alternativamente podemos usar la función nrow() para obtener el número de filas
+
 ncol(school_data_merged)
 
 ```
@@ -301,7 +301,7 @@ Generalmente, que hagamos con este tipo de datos depende del tipo de modelos que
 Para cambiar a long, usamos `pivot_longer()`
 
 ```{r}
-# load tidyr package. Ya etsá incluido en tidyverse, pero  también se puede llamar por si solo.
+# lCargamos el paquete tidyr package. Ya está incluido en tidyverse, pero  también se puede llamar por si solo.
 
 library("tidyr")
 
@@ -315,7 +315,7 @@ school_data_tidy<-school_data_merged%>%
                             values_to = "test_score",
                              )
 
-# ncol to get the number of columns of the new dataset
+# ncol nos da el número de columnas del nuevo dataset
 ncol(school_data_tidy)
 ```
 
@@ -341,7 +341,7 @@ En estos casos, para *parental_schooling* tenemos 45 missing y para *test_score*
 # Seleccionamos las columnas sin missing values
 school_data_selected<-dplyr::filter(school_data_tidy,!is.na(parental_schooling),!is.na(test_score))
 
-# Use skim() to skim the data again
+# Usamos skim() para revisar los datos nuevamente
 skim(school_data_selected)
 
 ```
@@ -352,47 +352,50 @@ Hemos removido todos los missing.
 
 Un último paso que haremos antes de hacer estadística decsriptiva es modificar los nombres de algunas columnas para que se vean bien en la tablas.
 
-Vambos renombrar la variable preu a preuniversitario. Lo hacemos con `rename()` del paquete dplyr. Esta función tiene una sintaxix similar a `filter()`
+Vambos renombrar la variable summpercap a summerschoolo. Lo hacemos con `rename()` del paquete dplyr. Esta función tiene una sintaxix similar a `filter()`
 
 ```{r}
-# renombremos preu a preuniversitario
+# renombremos summercamp a summerschool
 analysisdata<-rename(school_data_selected, summerschool=summercamp)
 
-# use head to view the first 6 observations 
+# usamos head para visualizar las primeras 6 observaciones
 head(analysisdata)
 ```
 
-En un siguiente paso, vamos a transformar los puntajes en la prueba PSU y las notas a una variable que tenga media 0 y desviación estándar 1. Nosotros como chilenos cnocemos el sistema, pero un lector de la investigación probablemente no. Es por esto que es mejor trabajar con variables estandarizadas.
+En un siguiente paso, vamos a transformar los puntajes en la pruebas a una variable que tenga media 0 y desviación estándar 1. Es mejor trabajar con variables estandarizadas, ya que no requieren conocer el conexto específico de la medida y es más facil de comunicar y comparar.
 
 ```{r}
-# Standardize test score
-# Group analysisdata by year
+# Estandarizamos los resultados de las pruebas
+# Agrupamos analysisdata por year
 analysisdata<-group_by(analysisdata,year)
 
-# Create a new variable with mutate
+# Creamos una nueva variable con mutate. Como queremos que reemplace a la anterior, usamos su mismo nombre. 
 analysisdata<-mutate(analysisdata, test_score=(test_score-mean(test_score))/sd(test_score))
 
+# mostremos la media
+print(paste("Mean of test score:",mean(analysisdata$test_score)))
 ```
 
 Esto tambien podemos hacerlo dentro de un pipe:
 
 ```{r}
-# Standardize test score
-# Group analysisdata by year
-analysisdata<-group_by(analysisdata,year)
-# Create a new variable with mutate
-analysisdata<-mutate(analysisdata, test_score=(test_score-mean(test_score))/sd(test_score))
-# show mean of test_score
+# Estandarizamos los resultados de las pruebas
+
+analysisdata<- analysisdata %>% 
+        group_by(year) %>% # Agrupamos analysisdata por year
+        mutate(test_score=(test_score-mean(test_score))/sd(test_score))
+
+# mostremos la media
 print(paste("Mean of test score:",mean(analysisdata$test_score)))
 ```
 
 Podemos comprobar que efectivamente la media y desviación estándar corresponden a dichos valores:
 
 ```{r}
-# show mean of test_score
+# ver la media de test_score
 print(paste("Mean of test score:",mean(analysisdata$test_score)))
 
-#show sd of test_score
+# Ver la desviación estándar de test_score
 print(paste("SD of test score:",sd(analysisdata$test_score)))
 ```
 
@@ -417,10 +420,10 @@ Hasta ahora, ya conocemos dos maneras de calcular estadísticas resumen:
 Una forma rápida de obtener una tabla de estadísticas descriptivas es con un primo de `skim()` del paquete *modelsummary*.
 
 ```{r}
-# load modelsummary
-
+# cargar modelsummary
 library("modelsummary")
-# create a summary stat table in Latex format
+
+# creamos una tabla de estádisticas descriptivas
 analysisdata%>%
   filter(year==2)%>%
   select(female,starts_with("paren"),letter,summerschool,test_score)%>%
@@ -464,9 +467,11 @@ Ahora la hacemos en formato latex:
 
 # load modelsummary
 #library("modelsummary")
+
 # create a summary stat table in Latex format
 #analysisdata%>%
 #  filter(year==2)%>%
+#  ungroup() %>%
 #  select(female,starts_with("paren"),letter,summerschool,test_score)%>%
 #  datasummary_skim( fmt="%.2f", 
 #                    histogram=FALSE, output=here::here("output/tab_summary_statistics.tex"))
@@ -487,10 +492,11 @@ datasummary(female+parental_schooling+
 
 ```
 
-En este ejemplo: - Listamos las variables a incluir separadas por un + similar to in a `female+parental_schooling+pa...` - Usamos a `~` para separar la lista de variables en la f´romula - Usamos la formula `Factor(summerschool)*(Mean+SD)` para mostror la media y desviación estándar por separado para cada grupo creado por la variable *preunivsersitario*. - Usamos `Factor()` para indicarle a R que debería considerar *preuniversitario* como una variable binaria.\
-- También podríamos haber hecho esto al limpiar y procesar la base de datos. - Podemos tambien invertir el orden `(Mean+SD)*Factor(summerschool)`, lo que entonces daría primero la media y devsicacion estándar y luego separar por los valores de preuniversitario.
+En este ejemplo: - Listamos las variables a incluir separadas por un + similar to in a `female+parental_schooling+pa...` - Usamos a `~` para separar la lista de variables en la fórmula - Usamos la formula `Factor(summerschool)*(Mean+SD)` para mostror la media y desviación estándar por separado para cada grupo creado por la variable *summerschool*. - Usamos `Factor()` para indicarle a R que debería considerar *summerschool* como una variable binaria.
 
--   Usamos la opción `sparce_header=FALSE` para especificar que queremos incluir e *preuniversitario* como título.
+- También podríamos haber hecho esto al limpiar y procesar la base de datos. - Podemos tambien invertir el orden `(Mean+SD)*Factor(summerschool)`, lo que entonces daría primero la media y devsicacion estándar y luego separar por los valores de la escuela de verano.
+
+-   Usamos la opción `sparce_header=FALSE` para especificar que queremos incluir e *summerschool* como título.
 
 #### 4.1.3 Nombres de variables
 
@@ -498,6 +504,7 @@ Hasta ahora hemos utilizado los nombres de variables directamente en las tablas.
 
 ```{r}
 # load modelsummary
+
 library("modelsummary")
 # create a summary stat table
 
@@ -530,7 +537,7 @@ datasummary((`Female`=female)+
             (Mean+SD+P25+P50+P75),
             sparse_header = FALSE,
             data=filter(analysisdata,year==2),
-            output = 'tab_descriptive_statistics.docx')
+            output = here::here("output/tab_descriptive_statistics.docx"))
 ```
 
 ### 4.2 Gráficos de estadística descriptiva
@@ -553,7 +560,7 @@ En este gráfico
 ```{r}
 # load ggplot2
 library("ggplot2")
-# create a scatter plot with a fitted line
+# creamos un scatter plot entre ingreso parental y resultados academicos en el año 5
 ggplot(analysisdata%>%filter(year==5),  
        aes(x=parental_lincome,y=test_score))+
        geom_point(alpha=0.1,size=0.85,color="#63a668")+
@@ -566,9 +573,9 @@ ggplot(analysisdata%>%filter(year==5),
 
 #### 4.2.2 Graficos de barras y boxplot
 
-Del grafico anteriro podemos observar que los resultados de los test se correlacionan con ingreso parental. Esto no es una sorpresa. Veamos si tambien el asistir al preuniversitario se correlaciona con estas características individuales.
+Del grafico anteriro podemos observar que los resultados de los test se correlacionan con ingreso parental. Esto no es una sorpresa. Veamos si tambien el asistir a la escuea de verano se correlaciona con estas características individuales.
 
-Primero, creamos un scatter plot de eduación de los padres y test score en el semestre antes del preuniversitario. Usemos el mismo código de arriba pero en lugar de ingreso, usamos educación parental. Segundo, creemos un gráfico de barras que muestre que el promedio de puntaje en la prueba diagnostico por asistencia al preuniversitario. Tercero, creamos un box plot de ingreso de los padres por asistencia al preuniversitario.
+Primero, creamos un scatter plot de educación de los padres y test score en el año anterior a la escuela de verano. Usemos el mismo código de arriba pero en lugar de ingreso, usamos educación parental. Segundo, creemos un gráfico de barras que muestre que los resultados previos a la asistencia a la escuela de verano. Tercero, creamos un box plot de ingreso de los padres y si asistieron o no a la escula de verano.
 
 Nuestro codigo ahora tiene estos elementos.
 
@@ -586,33 +593,38 @@ library("patchwork")
 # Create raw chart element
 rawchart<-ggplot(analysisdata%>%filter(year==4),x=as.factor(fill))+
           theme_classic()
+
 # Create bar chart of pre summer school test score and summer school 
 p1<-rawchart+
        geom_smooth(aes(x=parental_schooling,y=test_score)) +
        geom_point(aes(x=parental_schooling,y=test_score),alpha=0.1)+
        labs(x="Parental schooling", y="Test Score Year 5")
+
 # Create bar chart of pre summer school test score and summer school 
 p2<-rawchart+
        geom_bar(aes(x=as.factor(summerschool),y=test_score),
                     stat="summary",fun="mean")+
        labs(y="Test Score Year 5", x="Attended Summer School")
+
 # Create bar chart of parental schooling and summer school attendance
 p3<-rawchart+
               geom_boxplot(aes(x=as.factor(summerschool),y=parental_lincome))+
        labs(y="Parental Income (log)", x="Attended Summer School")
+
 # Combine charts
 p1/(p2+p3)
+
 # Export chart
 ggsave("fig1.png")
 ```
 
-Estos tres gráficos nos muestran que los puntajes en las pruebas se correlacionan con características de los padres (ambos scatters) y que aquellos que asistieron al preuniversitario tenían mejores puntaje sincluso antes de hacer el preuniversitario y que las caraterísticas de los padres se relaciona con la asistencia al preuniversitario.
+Estos tres gráficos nos muestran que los puntajes en las pruebas se correlacionan con características de los padres (ambos scatters) y que aquellos que asistieron a la escuela de verano tenían mejores puntajes incluso antes de ir a la escuela de verano y que las caraterísticas de los padres se relaciona con la asistencia al éste 
 
 Es decir, tenemos **SESGO DE SELECCIÓN**
 
 #### 4.1.3 Histogramas y gráficos de densidad
 
-Comaperemos la distribución de los puntajes depués de asistir al preuniversitario por quienes fueron y los que no fueron a dicho reu. Crea,os un histograma con una linea que muestre las densidades estimadas.
+Comaperemos la distribución de los puntajes depués de asistir a la escuela de verano por quienes fueron y los que no fueron. Creamos un histograma con una linea que muestre las densidades estimadas.
 
 ```{r}
 # create a histogram and density chart
@@ -622,16 +634,16 @@ ggplot(filter(analysisdata,year==6),
                        position="identity",color="white")+
        geom_density(alpha=0.0,size=1,show.legend= FALSE)+
        theme_minimal()+
-       labs(y="Densidad",x="Puntaje en prueba de selección (estandarizado)",fill=" ")+
-       scale_fill_brewer(palette="Set2",labels=c("No asistió","Asistío a preuniversitario"))+
+       labs(y="Densidad",x="Puntaje en prueba año 6 (estandarizado)",fill=" ")+
+       scale_fill_brewer(palette="Set2",labels=c("No asistió","Asistío a la escuela de verano"))+
        theme(legend.position="top")
 ```
 
-Claramente hay diferencias en sus resultados. Pero la estimación directa va a confundir cuanto de esto proviene del sesgo de selección y cuanto es el efecto real de ir al preu.
+Claramente hay diferencias en sus resultados. Pero la estimación directa va a confundir cuanto de esto proviene del sesgo de selección y cuanto es el efecto real de ir a la escuela de verano.
 
 #### 4.1.4 Correalograma
 
-Muchas veces queremos saber que tán correlacionadas estan las variables en una muestra. Podríamos simplementa calular una tabla de correlaciones, pero el paquete \[PerformanceAnalytics\] tiene una función muy conveniente: `chart.Correlation()` que nos presenta un gráico con las correlaciones de a pares, su significancia estadística, gráficos de dispersión y distribución.
+Muchas veces queremos saber que tán correlacionadas estan las variables en una muestra. Podríamos simplementa calular una tabla de correlaciones, pero el paquete \[PerformanceAnalytics\] tiene una función muy conveniente: `chart.Correlation()` que nos presenta un gráfico con las correlaciones de a pares, su significancia estadística, gráficos de dispersión y distribución.
 
 ```{r}
 
@@ -650,15 +662,16 @@ chart.Correlation(correlations_graph, histogram=TRUE, pch=19)
 
 # III. Estimación e identifiación
 
-Tenemos nuestro problema base claro, ahora usemos algunas estrategias de identificaión para encontrar el efecto de asitir a un preuniversitario en esta muestra.
+Tenemos nuestro problema base claro, ahora usemos algunas estrategias de identificaión para encontrar el efecto de asitir a una escuela de verano en esta muestra.
 
 Para esto, partiremos del mejor caso: contamos con un experimento y luego iremos variando la información disponible y la estrategia que es factible emplear.
 
 ## 1. Regresión lineal ingenua
 
-Nuestro objetivo es estimar la relación el puntaje en la prueba de admisión a la universidad y participar del preuniversitario intensivo. Para esto podríamos pensar en un modelo que directamente incluya a etsos dos elementos.
+Nuestro objetivo es estimar la relación en los resultados académicos y asistira la escuela de verano. Para esto podríamos pensar en un modelo que directamente incluya a estos dos elementos.
 
-$$ Puntaje_i = \beta_0 + \beta_1 I(PREU=0)_i + u_i $$ El modelo estimado sería:
+$$ Resultado_i = \beta_0 + \beta_1 I(Summerschool=1)_i + u_i $$ 
+El modelo estimado sería:
 
 ```{r}
 ols <- lm ( test_score ~ summerschool, data= analysisdata )
@@ -686,7 +699,7 @@ Stargazer es util, pero esta siendo reemplazado por otros paquetes, particularme
 
 
 cm <- c( "test_score" = "Test Score",
-         "summerschool" = "Pre universitario" )
+         "summerschool" = "Escuela de verano" )
 ```
 
 ```{r}
@@ -731,7 +744,7 @@ naive_ols_models <- list(
 # Mapeo de nombre de variables
 
 cm <- c( "test_score" = "Test Score",
-         "summerschool" = "Pre universitario",
+         "summerschool" = "Summer school indicator",
          "parental_lincome" = "Parental Income (log)",
          "parental_schooling" = "Parental schooling" )
 ```
@@ -759,28 +772,34 @@ Sin embargo, si creemos que lo que también correlacona es una inobservable como
 
 ¿Qué hacer?
 
-Vamos a revisra varias alternativas: - Experimental - Datos observacionales: 1. Método de diferencias (en datos experimentales)
+Vamos a revisra varias alternativas: 
 
-    [2. Logit y probit](#logit-y-probit)
+- Experimental
 
-    [3. Variables Instrumentales]
+    1. Método de diferencias (en datos experimentales)
 
-    [4. Regresión Discontinua]
+    2. Logit y probit
 
-    [5. Diferencias en Diferencias]
+ - Datos observacionales: 
 
-    [6. Efectos fijos, aleatorios y modelos jerárquicos]
+    3. Variables Instrumentales
 
-    [7. Matching]
+    4. Regresión Discontinua
+
+    5. Diferencias en Diferencias
+
+    6. Efectos fijos, aleatorios y modelos jerárquicos
+
+    7. Matching
 
 ## 2. Método de diferencias (en datos experimentales)
 
-Un primer caso, es que antes de asistir al preuniversitario se selecciona al azar un grupo de estudiantes para enviarles una carta de invitación que recuerda sus características y detalla como participar.
+Un primer caso, es que antes de asistir al curso de verano se selecciona al azar un grupo de estudiantes para enviarles una carta de invitación que recuerda sus características y detalla como participar.
 
 ¿Podría ser este un buen experimento?
 
 -   Asignación aleatoria
--   Tratamiento: recibir la carta -\> no es directamente el preuniversitario. Nos permite ver el efecto causal de recibir la carta, pero no de asistir al preuniversitario. Vamos a usar una técnica para enfrentar etso posteriormente.
+-   Tratamiento: recibir la carta -\> no es directamente la escuela de verano. Nos permite ver el efecto causal de recibir la carta, pero no de asistir a la escuela de verano. Vamos a usar una técnica para enfrentar esto posteriormente.
 
 Por ahora, supongamos que conocer el efecto de la carta en el puntaje es una pregunta lo suficientemente interesante.
 
@@ -802,7 +821,7 @@ ols_letter_experiment <- list(
 # Mapeo de nombre de variables
 
 cm <- c( "test_score" = "Test Score",
-         "summerschool" = "Pre universitario",
+         "summerschool" = "Summer School",
          "parental_lincome" = "Parental Income (log)",
          "parental_schooling" = "Parental schooling" )
 ```
@@ -812,7 +831,7 @@ Tabla con stargazer:
 ```{r}
 library(stargazer)
 
-stargazer::stargazer(ols_letter_experiment, type = "text", out="tabla1.tex")
+stargazer::stargazer(ols_letter_experiment, type = "text", out=here::here("output/tabla2.tex"))
 
 ```
 
@@ -826,7 +845,7 @@ Para saber si la signación aletaoria efectivamente separó a dos grupos compara
 
 #### 2.1 Comparación de a pares
 
-Una primera opción es realizar una prueba t en las variables observables en ambos grupos, usamos el comando `t.tes()` . Por ejemplo podriamos comparar el ingreso de los padres con `parental_income~summerschool` para probar si la media de test_score es significantemente diferente en los dos grupos especificados por la asistencia al preuniversitario.
+Una primera opción es realizar una prueba t en las variables observables en ambos grupos, usamos el comando `t.tes()` . Por ejemplo podriamos comparar el ingreso de los padres con `parental_income~summerschool` para probar si la media de test_score es significantemente diferente en los dos grupos especificados por la asistencia al curso de veranp
 
 ```{r}
 # Realizamos la prueba T
@@ -869,7 +888,7 @@ datasummary_balance(~Treated,
 
 Los reslutados de la tabla sugieren que no hay diferencias significativas entre tratados y controles ANTES del tratamiento. ¡ Muy bien!
 
-Y como antes, podríamos directaente agregar la opción `outpu=tab_balancing.docx` para exportarla en word (o latex).
+Y como antes, podríamos directaente agregar la opción `outpu=tab_balancing.docx` para exportarla en word (o latex). (no olvidar especificar la carperta con `here::here("output/`)
 
 #### 2.4 Aproximación gráfica
 
@@ -900,7 +919,7 @@ En nuestro caso los estudiantes están agrupados en colegios y es esperable que 
 
 Podemos ignorar esta estructura en los datos y simplemente considerarlos como un conjunto de unidades comparables, es decir tratarlo como un **pooled cross-section**. Si las diferencias entre grupos no son sistemáticas, no deberíamos observar diferencias, sin embargo esto puede estar haciendo que caigamos en problemas como la *paradoja de Simpson* o el *Mathew effect*
 
-Para profundizar recomiendo: https://ds4ps.org/pe4ps-textbook/docs/p-040-fixed-effects.html o el capítulo
+Para profundizar recomiendo: https://ds4ps.org/pe4ps-textbook/docs/p-040-fixed-effects.html o el capítulo del libro
 
 ![](images/FEproblems.png)
 
@@ -1072,13 +1091,13 @@ Un segundo elemento es revisar que ocurre con probabilidad de entrar al preunive
 
 En este caso, el modelo a estimar tendría como outcome de interés a una variable dicotómica.
 
-$$ preuniversitario_i = g(letter_i)+u_i $$
+$$ summerschool_i = g(letter_i)+u_i $$
 
 ### 3.1 Probabilidad lineal
 
 Una primera aproximación sería sencillamente estimar un modelo lineal:
 
-$$ preuniversitario_i = \beta_0+ \beta_1 letter_i + \gamma' X_i+u_i $$ Ya sabemos como hacerlo, simplemente usamos lm() o felm(). Aprovechemos esta oportunidad para agregar una fila con la media de la variable dependiente, este es genralemnte un elemento importante a incluir cuando estamos rabajando con variables dicotómicas ya que pone en contexto el análisis. Esto lo hacemos con el parámetro `add_rows=...`
+$$ summerschool_i = \beta_0+ \beta_1 letter_i + \gamma' X_i+u_i $$ Ya sabemos como hacerlo, simplemente usamos lm() o felm(). Aprovechemos esta oportunidad para agregar una fila con la media de la variable dependiente, este es genralemnte un elemento importante a incluir cuando estamos rabajando con variables dicotómicas ya que pone en contexto el análisis. Esto lo hacemos con el parámetro `add_rows=...`
 
 ```{r}
 
@@ -1098,7 +1117,7 @@ modelsummary(models, stars = TRUE,statistic = 'std.error',
               coef_omit= '(Intercept)', output = 'flextable')
 ```
 
-Podemos ver que recubir la carta aumenta la probabilidad de asistir al preuniversitario en 44%, lo que es un incremento de casi un 100% considerando que la media de dicha variable era 0.46.
+Podemos ver que recubir la carta aumenta la probabilidad de asistir a la escuela de verano en 44%, lo que es un incremento de casi un 100% considerando que la media de dicha variable era 0.46.
 
 A pesar de su gran interpretabilidad, los modelos de probabilidad lineal tienen varios problemas: predicciones pueden salir del rango \[0,1\] y que son heterocedasticos por definición.
 
@@ -1150,14 +1169,14 @@ Acá podemos ver una tabla con los tres modelos y compararlos.
 
 ## 4. Variables Instrumentales
 
-Volviendo a nuestra pregunta de investigación inicial queríamos conocer elefecto de asistir al preuniversitario en los puntajes, no de la carta.
+Volviendo a nuestra pregunta de investigación inicial queríamos conocer elefecto de asistir a la escuela de verano en los puntajes, no de la carta.
 
-Sin embargo, sabemos que la carta se asignó aleatoriamente y que afecta a la probabilidad de asitir al preuniversitario. En otras palabras: **podemos usar la carta como instrumento**
+Sin embargo, sabemos que la carta se asignó aleatoriamente y que afecta a la probabilidad de asitir a la escuela de verano. En otras palabras: **podemos usar la carta como instrumento**
 
 Es más, podríamos no realizar ninguna estimación y recurrir a lo ya obtenido:
 
 -   Sabemos que el estimador de la forma reducida: $$ testscore_i = \beta_0 + \beta_1 letter_i + u_i $$ es 0.2 SD.}
--   En el punto anterior calculamos la primera etapa: $$ preuniversitario_o = \alpha_0 + \alpha_1 letter_i + \mu_i$$ que corresponde aproximadamente a 0.4.
+-   En el punto anterior calculamos la primera etapa: $$ summerschool_o = \alpha_0 + \alpha_1 letter_i + \mu_i$$ que corresponde aproximadamente a 0.4.
 
 Entonces, el **Estimador de Wald** de variables instrumentales es: IV=0.2/0.4 =0.5
 
@@ -1200,9 +1219,9 @@ Los coeficientes son iguales que antes, pero los errores estándar cambiaron ya 
 
 ### 4.3 Tabla de reporte IV
 
-Terminemos la sección de IV con una tabla que muestre la correlación pira entre la asistencia al preuniversitario y puntajes (ingenuo), la forma reducida, la primera etapa y la estimación de variable instrumental
+Terminemos la sección de IV con una tabla que muestre la correlación pira entre la asistencia a la escuela de verano y puntajes (ingenuo), la forma reducida, la primera etapa y la estimación de variable instrumental
 
-Notemos que usaremos `coef_map= c( )` para renombrar las variables en la tabla, espeficicar los coeficientes a incluiry permitir que dos coeficientes con diferente nombre aparezcan en la misma fila (preuniversitario y fit_preuniversitario)
+Notemos que usaremos `coef_map= c( )` para renombrar las variables en la tabla, espeficicar los coeficientes a incluiry permitir que dos coeficientes con diferente nombre aparezcan en la misma fila (summerschool y fit_summerschool)
 
 ```{r}
 # Estimate OLS
@@ -1228,21 +1247,21 @@ modelsummary(IVresults, stars = TRUE,statistic = 'std.error',
              fmt= '%.4f',coef_map=cm, output =      )
 ```
 
-La primera columna nos muestra que si ignoramos el problema de selección y etsimamos la regresión directamente entre el puntaje y la asistencia al preuniversitario (condicional en los controles) nos dá un efecto promedio de 0.78 SD. Como sería esperable, este efecto está **sobrestimado** pueso incluye el sesgo por selección, lo que podemos comprobar al comprarlo con el estimador de IV de 0.47SD.
+La primera columna nos muestra que si ignoramos el problema de selección y etsimamos la regresión directamente entre el puntaje y la asistencia a la escuela de verano (condicional en los controles) nos dá un efecto promedio de 0.78 SD. Como sería esperable, este efecto está **sobrestimado** pueso incluye el sesgo por selección, lo que podemos comprobar al comprarlo con el estimador de IV de 0.47SD.
 
-Las estadísticas descriptivas que estudiamos, sugieren que quienes asistieron al preuniversitario ya tenían mejores puntajes antes del preuniversitario y que sus padres tenían mayores ingresos y años de educación. Entonces, el coeficiente en la primera columna no solo captura el efecto rpopio del preuniversitario, sino todas estas caracteristicas inobservables correlacionadas positivamente con los puntajes y con la asistencia al preuniversitario.
+Las estadísticas descriptivas que estudiamos, sugieren que quienes asistieron a la escuela de verano ya tenían mejores puntajes antes del la escuela de verano y que sus padres tenían mayores ingresos y años de educación. Entonces, el coeficiente en la primera columna no solo captura el efecto propio de la escuela de verano, sino todas estas caracteristicas inobservables correlacionadas positivamente con los puntajes y con la asistencia la escuela de verano.
 
 ## 6. Diferencias en Diferencias
 
 La estrategia que tomamos con IV es bastante convincente, porque se basa en un exterimento aleatorio (RCT) y el coeficiente "ingenuo" era mayor que el de IV, como era esperable.
 
-¿Pero que hacemos si no contamos con una carta? Imaginemos que no tenemos la carta, pero si contamos con mediciones antes y despues del preuniversitario (como lo hacemos). Podemos usar la estrategia de **DiD** .
+¿Pero que hacemos si no contamos con una carta? Imaginemos que no tenemos la carta, pero si contamos con mediciones antes y despues de la escuela de verano (como lo hacemos). Podemos usar la estrategia de **DiD** .
 
 Estaría dada por la siguiente especificación:
 
 $$test_score=\beta1+\beta_2summerschool_i+\beta_3after_i+\beta_4after_i\times summerschool+\gamma'X_i+u_i$$
 
-en el cual after es una variable dictotómica que considera el periodo después de asistir al preuniversitario.
+en el cual after es una variable dictotómica que considera el periodo después de asistir la escuela de verano.
 
 ### 6.1 Tendencias paralelas
 
@@ -1264,13 +1283,13 @@ ggplot(df,aes(x=year,y=test_score,color=as.factor(summerschool)))+
 
 ```
 
-Observamos que previo al preuniversitario iban "mas o menos" en paralelo. Pero después del tratamiento, estos caen para lso controles. Eto e sun poco preocupante, pero fuera de eso, se ven similares.
+Observamos que previo a la escuela de verano iban "mas o menos" en paralelo. Pero después del tratamiento, estos caen para los controles. Esto es un poco preocupante, pero fuera de eso, se ven similares.
 
 Generalmente, no contamos con tantas mediciones para tener una evaluación empirica de las tendencias.
 
 ### 6.2 Estimación modelo de diferencias en diferencias.
 
-Primero, en un caso más similar, usemos solo las estimaciones justo antes y una despues del preuniversitario usando la función `lm()`.
+Primero, en un caso más similar, usemos solo las estimaciones justo antes y una después de la escuela de verano usando la función `lm()`.
 
 Primero, creamos la variable dummy de después usando `mutate()` y `ifelse()`.
 
@@ -1291,7 +1310,7 @@ summary(m)
 
 Bien, observamos que el estiamodr de DIF es de 0.75SD. Observamos que es mayor que el que obtuvimos en IV y menor que el de OLS, pero por poco.
 
-Veamos que ocurre si ahora usamos todos los datos disponibles. Podemos usar la función `feols()` para estimar con todos los años (también podriamos usar `lm()`). Este es el enfoque tradiciona, con una variable que indica después del tratamiento y la interacción entre después y tratamiento y una dummy por tratamiento. En el segundo modelo ponemos la otra opción, que es agregar un efecto fijo temporal en bez de la dummy de después. En el tercer modelo, agregamos controles.
+Veamos que ocurre si ahora usamos todos los datos disponibles. Podemos usar la función `feols()` para estimar con todos los años (también podriamos usar `lm()`). Este es el enfoque tradiciona, con una variable que indica después del tratamiento y la interacción entre después y tratamiento y una dummy por tratamiento. En el segundo modelo ponemos la otra opción, que es agregar un efecto fijo temporal en vez de la dummy de después. En el tercer modelo, agregamos controles.
 
 ```{r}
 
@@ -1327,22 +1346,194 @@ La última columna (4) excluye el año 5 donde veiamos la desviación en las ten
 
 
 
-## 8. Matching
+## 7. Matching
 
-Otra alternativa de análisis es mediante el matching. EN este caso, buscaremos para cada individuo que fue al preuniversitario algun compañero similar en observables que no haya asisitido. 
+Otra alternativa de análisis es mediante el matching. EN este caso, buscaremos para cada individuo que fue a la escuela de verano algún compañero similar en observables que no haya asisitido. 
 
-Hay dos formas de hacerlo, buscar alguien que sea exactamente igual (exact matching) o que la probabilidad de asistir al preuniversitario basado en un set de observables sea igual (propensity score matching). Vamos a ver ambos.
+Hay dos formas de hacerlo, buscar alguien que sea exactamente igual (exact matching) o que sean aproximadamente igual (approximate matching). Una de las formas más usadas de encontrar estos aproximadamente iguales es quela probabilidad de asistir a la escuela de verano basado en un set de observables sea igual (propensity score matching). Vamos a ver ambos tipos.
 
-Una revisión completa de matching está acá: [ds4ps](https://ds4ps.org/pe4ps-textbook/docs/p-080-matching#matchit-function-in-r)
+Una revisión completa de matching está acá: [ds4ps](https://ds4ps.org/pe4ps-textbook/docs/p-080-matching#matchit-function-in-r) o en [
+Mixtape cap 5] (https://mixtape.scunning.com/05-matching_and_subclassification) la mayoría basados en el trabajo de [Abadie e Imbens (2006)](https://econpapers.repec.org/article/ecmemetrp/v_3a74_3ay_3a2006_3ai_3a1_3ap_3a235-267.htm)
 
 La estrategia de matching sigue los siguientes dos pasos:
-
 1 -  Para cada tratado encontramos a su "clon". Para esto hay dos alternativos, usamos uno (o varios) match exactos o usamos el propensity score matching.
+
 2 -  Usando los "clones" calculamos calculamos el ATE.
 
-
 Lo primero que deberíamos hacer entonces es obtener los clones. 
-Vamos a trabajar con el paquete [*MatchIT* ](https://kosukeimai.github.io/MatchIt/articles/MatchIt.html) (Muy recomendable revisar su documentación)
+
+### 7.1 Hayando clones manualmente
+
+Primero lo haremos manualmente. 
+
+#### 7.1.1 Exact matching manual
+
+Un exact match, lo que hace es identificar uno (varios) contrafactuales que se encuentren más cercanos a cada individuo tratado en la muestra.
+
+Lo que hacemos es definir en que variables vamos a considerar el match. En nuestro caso quisieramos hacerlo por colegio, sexo, educacion de los padres e ingreso de los padres.
+
+Para simplificar como se hace el algortmo, primero usemos una única característica en un único colegio, educación de los padres.
+
+
+```{r}
+# Realizamos un filtro de la data para ilustrar el ejemplo en un solo colegio
+# Dado que la educaión de los padres la tenemos solo para un año, quedémonos con los datos del año 6 para ilustrar con el outcome de interes el test_score después del tratamiento.
+
+exact_macth_df_treated <- analysisdata %>%
+                          dplyr::filter(school_id==1&year==6&summerschool==1) %>%
+                          dplyr::select(person_id, summerschool, parental_schooling, test_score)
+                    
+exact_macth_df_controls <- analysisdata %>%
+                          dplyr::filter(school_id==1&year==6&summerschool==0) %>%
+                          dplyr::select(person_id, summerschool, parental_schooling, test_score)
+
+
+
+head(exact_macth_df_treated)
+head(exact_macth_df_controls)
+
+```
+
+Entonces, para cada individuo tratado encontremos el control en su colegio que sería más cercano en términos de educación de sus padres.
+
+Varias cosas que debemos decidir:
+
+1. Como definiremos "cercano" : mediremos una distancia, una diferencia, otra cosa.
+2. Cuantos matchs "más cercanos" buscaremos
+    2.1 Si es solo 1, cual elegimos. (ventaja clones más similares)
+    2.2 Si es más de uno: Los guardamos todos o realizamos una agregación. (permite mayor muestra)
+        2.2.1: ¿Cómo agregamos?: la media, la mediana... otro?
+3. Si usamos un miembro de la muestra, ¿lo podemos volver a usar?
+
+En la [documentación del paquete](https://cran.r-project.org/web/packages/MatchIt/vignettes/matching-methods.html) `MatchIT` de Noah Greifer hay un buen listado y resumen de los diferentes métodos posibles para hacer el matching.
+
+Hagamos un match con el más cercano en el valor absoluto de la diferencia. Esto se llama *" nearest neighbor matching"*
+
+
+Si hay más de un candidato, elegimos el primero.
+
+Pro ejemplo, calculamos la distancia para cada elemento de los controles con el individuo 1 de los tratados.
+
+```{r}
+
+exact_macth_df_controls_t1 <-  
+    exact_macth_df_controls %>%
+    mutate(distance_1 = abs(11-parental_schooling) )
+
+head(exact_macth_df_controls_t1)
+```
+Acá podemos elegir el que la distancia sea 0 o cualquier valor arbitrariamente pequeño. Por ejemplo, elijamos todos los que el valor es 0.
+
+```{r}
+exact_macth_df_controls_t1 <- exact_macth_df_controls_t1 %>%
+                              dplyr::filter(distance_1==0)
+
+head(exact_macth_df_controls_t1)
+dim(exact_macth_df_controls_t1)
+```
+
+Podemos ver que hay 24 candidatos. ¿Cómo elejimos? Imaginemos que elegimos uno al azar y lo defifinimos como el clon para el individuo 1 de los tratados.
+
+
+```{r}
+set.seed(0) #para que todos tengamos el mismo resultado
+slice_sample(exact_macth_df_controls_t1,n=1)
+
+```
+
+Entonces nuestro clon para el individuo 66 sería el 2421. Si recordamos su resultado era 3.571861 y del match, decimos que su contrafactual sería 2.372809, entonces su ATE sería:
+
+```{r}
+3.571861 - 2.372809
+```
+
+Luego pasamos al segundo individuo tratado. Para esto primero debemos saber si la persona 2421 estará disponible como match potencial. Una vez definido eso, replicamos los pasos anteriores.
+
+Con esta idea es posible crear algorthmos adhoc a cada problema, pero nosotros aprovecharemos un paquete que ya los tiene implementados: `MatchIT`
+
+
+#### 7.1.2 Propensity score matching
+
+Del ejemplo anterior es facil imaginarse como sería una alternativa para multiples dimensiones, como una función con múltiples imputs que describa alguna distancia.
+
+Una segunda manera de hacer el match es con el propensity score. Una forma comun es mediante una función logit. A cada individuo vamos a calcular su probabilididad de ser tratado dadas las covariables en las que deseamos hacer el match.
+
+
+```{r}
+# Realizamos un filtro de la data para ilustrar el ejemplo en un solo colegio
+# Dado que la educaión de los padres la tenemos solo para un año, quedémonos con los datos del año 6 para ilustrar con el outcome de interes el test_score después del tratamiento.
+
+props_macth_df<- analysisdata %>%
+                          dplyr::filter(school_id==1&year==6) 
+                    
+
+head(props_macth_df)
+
+```
+
+Calculamos el propensity score estimando un modelo logit y luego calculamos la probabilidad estimada.
+
+```{r}
+## Estimamos el logit model
+
+log_matching = glm( summerschool ~ female + parental_schooling + parental_lincome, data = props_macth_df, family = "binomial")
+
+## Calculate the propensity score by estimating the probability for each child to attend a private or a public school.
+
+props_macth_df$prop_score <- predict(log_matching, newdata = props_macth_df, type = "response")
+
+# creamos un indice para identificar alumnos más facil que su id (es muy larga)
+props_macth_df <- props_macth_df %>% dplyr::mutate(number = row_number())
+
+
+head(props_macth_df %>% dplyr::select(person_id, summerschool, female, parental_schooling, parental_lincome, prop_score, number ) )
+
+```
+
+Podemos ver el rango en el que se mueve prop_score como referencia
+
+```{r}
+summary(props_macth_df$prop_score)
+
+```
+
+Podriamos también hacer una gráfica de cada estudiante y su propensity score
+
+```{r}
+
+palette(c("darkred", "dodgerblue1")) #azules tratados y rojos no tratados
+
+plot(prop_score ~ number, data=subset(props_macth_df, number<20), lwd = 3, ylab = "Predicted probabilities", xlab = "Observations", xaxt = "n", col=summerschool+1 )
+
+axis(1, at=1:20)
+
+for (i in 1:nrow(props_macth_df)){
+  segments(props_macth_df$number[i], 0, props_macth_df$number[i], props_macth_df$prop_score[i], lty = 2, col = "gray70")}
+
+```
+
+Entonces, **¿cómo buscamos los clones?** 
+
+Ordenemos nuestro dataframe por propensity score, para ver cuales son similares:
+
+```{r}
+## Ordenemos el data frame por propensity score 
+
+props_macth_df = as.data.frame(props_macth_df[order(props_macth_df$prop_score), ])
+
+## We just look at the top 5 observations
+props_macth_df_2 = round(props_macth_df[5:9,], 2)
+props_macth_df_2
+```
+Por ejemplo en este grupo todos tienen propensity score similar y solo uno de estos fue tratado.
+
+
+Para elegir su match podriamos calcular la distancia y definir bajo que valor definiremos un match.
+
+
+### 7.2 Clones con paquete MatchIt
+
+Una alternatia al trabajo manual es usar el paquete [*MatchIT* ](https://kosukeimai.github.io/MatchIt/articles/MatchIt.html) (Muy recomendable revisar su documentación)
 
 
 ```{r}
@@ -1351,161 +1542,245 @@ Vamos a trabajar con el paquete [*MatchIT* ](https://kosukeimai.github.io/MatchI
 library("MatchIt")
 ```
 
- 
-### 8.1 Exact matching
+Partiremos con definir un proceso de matching por defecto con todas las observaciones y definiendo como covariables school_id + female + parental_schooling + parental_lincom + test_score (año 5)
+
+Subset para matching solo con el periodo antes de la escuela de verano
+
+```{r}
+match_data <- school_data_1 %>%  #usamos este porque quisieramos tener en una fila el outcome del test en año 6 y del 5 para usar de control 
+             dplyr::filter(!is.na(parental_schooling),!is.na(test_year_5),!is.na(test_year_6)) %>%
+             dplyr::mutate(summerschool=summercamp)  
+            
+
+match_data
+```
+
+De estos, en total 1598 individuos son tratados.
+
+```{r}
+mean(match_data$summerschool)
+sum(match_data$summerschool)
+```
+Recordemos que los grupos tratados y tratamiento eran bastante diferentes:
 
 
-Un exact match, lo que hace es identificar uno ( varios) contrafactuales que se encuentren más cercanos a cada individuo tratado en la muestra.
+En ingreso de los padres
 
-Lo que hacemos es definir en que variables vamos a considerar el match. En este caso lo haremos por colegio, sexo, educacion de los padres e ingreso de los padres.
+```{r}
+
+ggplot(filter(match_data),
+       aes(x=parental_lincome,fill=as.factor(summerschool)))+
+       geom_histogram(aes(y=..density..),bins = 50,alpha=0.5,
+                       position="identity",color="white")+
+       geom_density(alpha=0.0,size=1,show.legend= FALSE)+
+       theme_minimal()+
+       labs(y="Densidad",x="Ingreso de los padres (log)",fill=" ")+
+       scale_fill_brewer(palette="Set2",labels=c("No asistió","Asistío a la escuela de verano"))+
+       theme(legend.position="top")
+
+```
+
+
+En la educación de los padres
+
+
+```{r}
+
+t.test(match_data$parental_schooling[match_data$summerschool==1],match_data$parental_schooling[match_data$summerschool==0], paried=T)  
+
+```
+
+En los resultados previos
+
+
+```{r}
+
+ggplot(filter(match_data),
+       aes(x=test_year_5, fill=as.factor(summerschool)))+
+       geom_histogram(aes(y=..density..),bins = 50,alpha=0.5,
+                       position="identity",color="white")+
+       geom_density(alpha=0.0,size=1,show.legend= FALSE)+
+       theme_minimal()+
+       labs(y="Densidad",x="Resultados año 5",fill=" ")+
+       scale_fill_brewer(palette="Set2",labels=c("No asistió","Asistío a la escuela de verano"))+
+       theme(legend.position="top")
+
+```
+
+
+Usemos ahora la función `matchit()`:esta crea el propensity score y asigna los clones segun las especificaciones que le demos.
+
+Notar el código de la función: primero especificamos el modelo logit en base al cual se calcularán los propensity scores. Luego especificamos el método para emparejar los scores. Nosotros usaremos vecino más cercano y por defecto trabaja sin reemplazo.
+
 
 ```{r}
 
 # Definamos un matching con todo por defecto.
 
-a <- MatchIt::matchit( summerschool ~ school_id + female + parental_schooling + parental_lincome, data=analysisdata  )
+match<- MatchIt::matchit( summerschool ~ as.factor(school_id) + female + parental_schooling + parental_lincome+ test_year_5,  method = "nearest", data= match_data )
 
-a
-
-```
-
-Observemos que lo que obtenemos es un objeto de matchit usando por edefto el vecino más cercano sin reemplazo.
-
-```{r}
-summary(a)
-```
-
-
-Podemos graficar el balance
-
-```{r}
-plot(summary(a))
-```
-
-
-### 8.2 Propensity score matching
-
-
-From the package MatchIt we will use the function matchit to create the propensity scores and the new dataset with the matched observation.
-
-Note the function code. First, we specificy the logit model to calculate the propensity scores as we did before in section @ref:creating-matching-score. We then specify the method to match the scores. We will use the nearest neighbor method (see @ref:nearest-neighbor-matching-and-caliper-distance). The default method is “withour replacement”.
-
-```{r}
-#m1 = matchit(df$school ~ df$income + df$occ_score + df$y_educ, method = "nearest", data = df)
+match
 
 ```
 
-We can see the outcome of the process by using summary.
+Observemos que lo que obtenemos es un objeto de matchit usando por defecto el vecino más cercano 1:1 y sin reemplazo.
 
-Have a look at the column “Mean Diff” and compare results in the “Summary of balance for all data” vs “Summary of balance for matched data”. You can see that the mean difference is drastically reduced in the matched data.
+Nos ha obtenido 3196 matchs del total de 3480 filas. 
 
-We can also look at the “Sample sizes” summary at the very end of the output. We started with 8841 control cases and 1159 treated cases. The algorithm matched all treated cases with only one control case, discarding 7682 observations.
-
-```{r}
-#summary(m1)
-```
-
-
-Once the algotrithm has calculated and matched the propensity scores, we can create a new dataset that contains all matched observations using the function match.data.
+Una vez el agortmo ha calculado los propensity scores, podemos crear un nuevo dataset que contenga las observaciones con matching usando la función `match.data()` donde ahora tenemos una medida de distancia, subclass que indica los pares.
 
 
 ```{r}
-#m1data = match.data(m1)
+matched_data <- match.data(match)
+
+head(matched_data)
+
 ```
 
+Los elementos clave que agrega este proceso son weights (pesos computados), subclass (que indica los pares de match), distance (el propensity score estimador) y match.matrix (una matriz de maching).
 
-ow that we have the dataset with the matched observations, we can have another look at the covariates and compare the treated and untreated cases.
+###7.3 Evaluando la calidad del match
 
-Para esto, hacemos una tabla de balance como lo hicismos anteriormente:
+Matching suele ser un proceso efectivo para eliminar las diferencias entre grupo tratado y de control para alcanzar el balance en las covariables, su desemepeño debe ser evaluado.
+
+Si las covariables siguen desvalanceadas después de emparejar, el matching no fue exitoso y se deben probar diferentes especificaciones. 
+
+Lo primero es revisar si hay diferencias significativas entre tratados y controles:
+
+```{r}
+t.test(matched_data$parental_schooling[matched_data$summerschool==1],matched_data$parental_schooling[matched_data$summerschool==0], paried=T)  
+
+```
+
+Y vemos que efectivamente hay...
+
+**Otras opciones en `matchit()`:
+
+La función matchit tiene varias opciones que pueden explorar mejir en su [documentación](https://r.iq.harvard.edu/docs/matchit/2.4-15/User_s_Guide_to.html). Algunas de las más importantes son:
+
+- replace: perimte que se realice el procedimiento con y sin reemplzao. Si deseas que sea con reemplazo se espcifica replace=TRUE
+- ratio: si el matching se realiza con reempzalo, se puede especificar el número de controles para caso tratado (uno a muchos). Por ejemplo, ratio=5
+- caliper: Se puede identificar una distancia espcifica para el match especificando las desviaciones etsándar en la distancia que son aceptadas. Tambien se puede indicar que, si no hay matches dentro de la distancia especificada, se use el vecino más cercano usando calclosest=TRUE
+
+
+**Otra opción del matching:**
+
+
+```{r}
+
+# Definamos un matching con todo por defecto.
+
+match<- MatchIt::matchit( summerschool ~ as.factor(school_id) + female + parental_schooling + parental_lincome+ test_year_5,  method = "nearest", data= match_data, replace=TRUE, ratio=5 )
+
+match
+
+```
+
 
 
 
 ```{r}
-#t.test(m1data$y_educ[m1data$school==1], m1data$y_educ[m1data$school==0], paired = T)
+matched_data2 <- match.data(match)
+
+head(matched_data2)
+
 ```
 
 
-We can see this graphically by looking at the dentisy plots for each independent variables in the treated and untreated group.
-
-```{r}
-#m1data$school = as.factor(m1data$school2)
-# 
-# ggplot(m1data, aes(x = m1data$y_educ, fill = m1data$school2)) +
-#     geom_density(position="identity", alpha=0.6) +
-#     scale_fill_brewer(palette="Dark2") +
-#     ggtitle("Density plot of years of education, by group") +
-#     scale_x_continuous(name = "Years of education",
-#     breaks = seq(14, 25, 2),
-#         limits=c(14, 25)) +
-#     scale_y_continuous(name = "Density") +
-#         theme(plot.title = element_text(size = 14, face = "bold"),
-#               text = element_text(size = 12)) +
-#     guides(fill=guide_legend(title=NULL))+ 
-#     scale_fill_discrete(labels=c("Control - Public School", "Treatment - Private School"))
-```
+Chequemos que pasó ahora:
 
 
 ```{r}
-# ggplot(m1data, aes(x = m1data$income, fill = m1data$school2)) +
-#     geom_density(position="identity", alpha=0.6) +
-#     scale_fill_brewer(palette="Dark2") +
-#     ggtitle("Density plot of income, by group") +
-#     scale_x_continuous(name = "Income",
-#     breaks = seq(11, 13, 0.5),
-#         limits=c(11, 13)) +
-#     scale_y_continuous(name = "Density") +
-#         theme(plot.title = element_text(size = 14, face = "bold"),
-#               text = element_text(size = 12)) +
-#     guides(fill=guide_legend(title=NULL))+ 
-#     scale_fill_discrete(labels=c("Control - Public School", "Treatment - Private School"))
+t.test(matched_data2$parental_schooling[matched_data2$summerschool==1],matched_data2$parental_schooling[matched_data2$summerschool==0], paried=T)  
+
 ```
 
 
-### 8.2.2 Efecto tratamiento de matching
+Podemos ver que todavia hay diferencias significativas entre tratados y controles.
+
+El paquete ofrece varias herramientas para evaluar el balance después del match.
+
+Podemos inpeccionar mejor este objeto con summary. Esta nos entrega la tabla de balance para los datos y mayores datos del match:
+
+```{r}
+summary(match)
+```
 
 
-
-Now that we have a matched dataset we can calculate the effect of treatment ( = being in a private school). As before, we can do a simple t-test across the two groups and compare the math skill scores between students in a private school and students in a public school.
+Tambien podemos graficar el balance:
 
 
 ```{r}
-# t.test(m1data$math_skills[m1data$school==1], m1data$math_skills[m1data$school==0], paired = T)
-
+plot(summary(match))
 ```
 
 
-he t-test shows that there is a statistically significant difference across the two groups (p-value < 0.001). The difference is equal to -0.34, suggesting that students attending a private school report, on average, a math skills score that is 4.33 points lower that students in public schools.
+Otro elemento a considerar es que ocurre con el tamaño de muestra después del match, si se descartan demasiado unidades puede ser que reduzcamos las estimaciones y pasen a ser imprecisas, esto porque hay un trade off entre balance y tamaño de muestra resultante.
 
-Obtenemos este mismo resultado al realizar la regresión con la dummy de tratamiento:
+
+```{r}
+plot(match, type = "jitter", interactive = FALSE)
+```
+
+Tambien podemos examinar bvisualmente usando gráficos de densidad.
+
+```{r}
+plot(match, type = "density", interactive = FALSE,
+     which.xs = ~female + parental_schooling + parental_lincome)
+```
+
+
+### 7.4 Efecto tratamiento de matching
+
+Ahora que tenemos un dataset emparejado el dataset podemos calcular el efecto del tratamiento. 
+
+Una opción es estimar una regression, teniendo cuidado de incluir los pesos de los pares.
 
 ```{r}
 
+# Estimate LPM
+
+models<-list(
+regression_match_nocontrols <-lm (test_year_6 ~ summerschool, data=matched_data ),
+regression_match_controls  <- lm (test_year_6 ~ summerschool + as.factor(school_id) + female + parental_schooling + parental_lincome+ test_year_5, data=matched_data, weights=weights )
+  )
+
+
+# Generate table
+modelsummary(models, stars = TRUE,statistic = 'std.error',  
+             fmt= '%.4f',add_rows = added_stats,
+              coef_omit= '(Intercept)', output = 'flextable')
+
 ```
 
-
-
-As before, we can look at results in a graphical form below. The treatment density curve (blue) tend more towards lower scores, marked on the left side of the graph, compared to the control (pink) curve.
+Podemos usar la librería `marginaleffects`para  computar el ATT, se recomienda emplear errores robustos cluster para la mayoría de los análisis usando el par como clustering.
 
 ```{r}
-# ggplot(m1data, aes(x = m1data$math_skills, fill = m1data$school2)) +
-#     geom_density(position="identity", alpha=0.6) +
-#     scale_fill_brewer(palette="Dark2") +
-#     ggtitle("Density plot of math skill score, by group") +
-#     scale_x_continuous(name = "Math skill score",
-#     breaks = seq(0, 100, 20),
-#         limits=c(0, 100)) +
-#     scale_y_continuous(name = "Density") +
-#         theme(plot.title = element_text(size = 14, face = "bold"),
-#               text = element_text(size = 12)) +
-#     guides(fill=guide_legend(title=NULL))+ 
-#     scale_fill_discrete(labels=c("Control - Public School", "Treatment - Private School"))
+library("marginaleffects")
+
+comp  <- comparisons(regression_match_controls,
+                     variables = "summerschool",
+                     vcov = ~subclass,
+                     newdata = subset(matched_data, summerschool == 1),
+                     wts = "weights")
+
+summary(comp)
 ```
 
-## 5. Regresión Discontinua
+Ojo:  los coeficientes de este modelo no deberían ser reportados ni interpretados directamente sin consideraciones. Se recomienda revisar [la viñeta del paquete](https://kosukeimai.github.io/MatchIt/articles/estimating-effects.html) para mayores detalles.
+
+## 9. Regresión Discontinua
 
 La última técnica que usaremos el la regresión discontinua. Vamos a hacer un ejemplo muy corto, pero necesitaremos más datos.
 
-Pensemos que para asistir al preuniversitario, los estudiantes tenían que dar una prueba diagnóstico y se invitaron a participar del preuniversitario que los estudiantes solo que sacaron hasta 500 puntos.
+Pensemos que para asistir al curso de verano, los estudiantes tenían que dar una prueba diagnóstico y se invitaron a los que scaaron hasta 500 puntos. Estos datos los vamos a simular.
+
+```{r}
+
+```
+
+
+
 
 
 # IV. Presentación de los resultados
